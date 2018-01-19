@@ -5,6 +5,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::post('login', 'LoginController@signIn');
     Route::get('captcha/{rcode?}', 'LoginController@captcha');
     Route::get('logout', 'LoginController@logout');
+    // 注册
+    Route::get('register', 'RegisterController@index');
+    Route::post('register', 'RegisterController@register');
 
     Route::group(['middleware' => 'auth:admin'], function () {
         Route::get('/', 'IndexController@index');
@@ -45,18 +48,138 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             // 权限配置
             Route::get('role/{role_id}/rules', 'RuleController@setRules');
             Route::put('role/{role_id}/rules', 'RuleController@storeRules');
-        });
-        /**
-         * 人员管理系统模块
-        */
-        // Route::group(['middleware' => 'register'], function () {
-            // 注册用户管理
-            Route::post('register', 'Registercontroller@addRegister');
-            Route::get('register/{id}/edit', 'Registercontroller@editRegister');
-            Route::put('register', 'Registercontroller@editRegister');
-            Route::delete('register', 'Registercontroller@deleteRegister');
-            Route::get('registers', 'Registercontroller@registers');
-        // });
-    });
 
+            /*
+             * 单位部门管理
+            */
+            // 单位列表
+            Route::get('company', 'CompanyController@companyList');
+            Route::get('companies', 'CompanyController@getCompanies');
+            Route::get('company/create', 'CompanyController@addCompany');
+            Route::post('company', 'CompanyController@addCompany');
+            Route::get('company/{id}/edit', 'CompanyController@editCompany');
+            Route::put('company', 'CompanyController@editCompany');
+            Route::delete('company', 'CompanyController@delCompany');
+            // 内设机构代码管理
+            Route::get('mechanismcode', 'MechanismCodeController@mechanismCodesList');
+            Route::get('mechanismcodes', 'MechanismCodeController@getMechanismCodes');
+            Route::get('mechanismcode/create', 'MechanismCodeController@addMechanismCode');
+            Route::post('mechanismcode', 'MechanismCodeController@addMechanismCode');
+            Route::get('mechanismcode/{id}/edit', 'MechanismCodeController@editMechanismCode');
+            Route::put('mechanismcode', 'MechanismCodeController@editMechanismCode');
+            Route::delete('mechanismcode', 'MechanismCodeController@delMechanismCode');
+            // 本单位的部门(内设机构)
+            Route::get('mymechanismcode', 'MechanismCodeController@myMechanismCodesList');
+            Route::get('mymechanismcodes', 'MechanismCodeController@getMyMechanismCodes');
+            Route::get('mymechanismcode/create', 'MechanismCodeController@addMyMechanismCode');
+            Route::post('mymechanismcode', 'MechanismCodeController@addMyMechanismCode');
+            Route::get('mymechanismcode/{id}/edit', 'MechanismCodeController@editMyMechanismCode');
+            Route::put('mymechanismcode', 'MechanismCodeController@editMyMechanismCode');
+            Route::delete('mymechanismcode', 'MechanismCodeController@delMyMechanismCode');
+            
+            /*
+             * 人员管理系统
+            */
+            // 注册用户管理
+            Route::get('registeruser', 'Registercontroller@registerList');
+            Route::get('registerusers', 'Registercontroller@getRegisterUsers');
+            Route::get('registeruser/{id}/edit', 'Registercontroller@editRegisterUser')->middleware('edituserbutton');
+            Route::put('registeruser', 'Registercontroller@editRegisterUser');
+            Route::patch('registeruser', 'Registercontroller@activeRegisterUser');
+            // Route::delete('registeruser', 'Registercontroller@delAdmin');     
+            // 完善人事信息用户管理
+            Route::get('completeinfouser', 'Registercontroller@completeInfoUserList');
+            Route::get('completeinfousers', 'Registercontroller@getCompleteInfoUsers');
+            Route::get('completeinfouser/{id}/edit', 'Registercontroller@editCompleteInfoUser')->middleware('edituserbutton');
+            Route::put('completeinfouser', 'Registercontroller@editCompleteInfoUser');
+            Route::patch('completeinfouser', 'Registercontroller@activeCompleteInfoUser');
+            // Route::delete('completeinfouser', 'Registercontroller@delAdmin');
+            /*
+             * 机构管理系统
+            */
+            // 司法鉴定机构代码列表
+            Route::get('institutioncode', 'InstitutionCodeController@institutionCodesList');
+            Route::get('institutioncodes', 'InstitutionCodeController@getInstitutionCodes');
+            Route::get('institutioncode/create', 'InstitutionCodeController@addInstitutionCode');
+            Route::post('institutioncode', 'InstitutionCodeController@addInstitutionCode');
+            Route::get('institutioncode/{id}/edit', 'InstitutionCodeController@editInstitutionCodes');
+            Route::put('institutioncode', 'InstitutionCodeController@editInstitutionCodes');
+            Route::delete('institutioncode', 'InstitutionCodeController@delInstitutionCodes');     
+            // 司法鉴定业务范围管理
+            Route::get('business', 'BusinessController@businessesList');
+            Route::get('businesses', 'BusinessController@getBusinesses');
+            Route::get('business/create', 'BusinessController@addBusiness');
+            Route::post('business', 'BusinessController@addBusiness');
+            Route::get('business/{id}/edit', 'BusinessController@editBusiness');
+            Route::put('business', 'BusinessController@editBusiness');
+            Route::delete('business', 'BusinessController@delBusiness');
+
+            // 司法鉴定机构证书
+            Route::get('inscertificate', 'InscertificateController@inscertificatesList');
+            Route::get('inscertificates', 'InscertificateController@getInscertificates');
+            Route::get('inscertificate/create', 'InscertificateController@addInscertificate');
+            Route::post('inscertificate', 'InscertificateController@addInscertificate');
+            Route::get('inscertificate/{id}/edit', 'InscertificateController@editInscertificate');
+            Route::put('inscertificate', 'InscertificateController@editInscertificate');
+            Route::patch('inscertificate', 'InscertificateController@activeInscertificate');
+            Route::delete('inscertificate', 'InscertificateController@delInscertificate');
+            
+            // 本机构证书查询列表
+            Route::get('myinscertificate', 'IdentifyinfoController@myInscertificateList');
+            Route::get('myinscertificates', 'IdentifyinfoController@getMyInscertificates');
+
+            // 各级鉴定机构证书查询统计列表
+            Route::get('alllevelinscertificate', 'IdentifyinfoController@allLevelInscertificateList');
+            Route::get('alllevelinscertificates', 'IdentifyinfoController@getAllLevelInscertificates');
+            // 鉴定人员统计查询
+            Route::get('appraiserstatistic', 'IdentifyinfoController@appraiserStatisticList');
+            Route::get('appraiserstatistics', 'IdentifyinfoController@getAppraiserStatistics');
+            Route::get('appraiserstatistics/look/{id}', 'IdentifyinfoController@lookAppraiserStatistics');
+            Route::get('appraiserstatistics/looks', 'IdentifyinfoController@getLookAppraiserStatistics');
+
+            /*
+             * 培训模块管理
+            */
+            // 培训信息列表
+            Route::get('trainmodule', 'TrainController@trainList');
+            Route::get('trainmodules', 'TrainController@getTrain');
+            Route::get('trainmodule/create', 'TrainController@addTrain');
+            Route::post('trainmodule', 'TrainController@addTrain');
+            Route::get('trainmodule/{id}/edit', 'TrainController@editTrain');
+            Route::put('trainmodule', 'TrainController@editTrain');
+            Route::delete('trainmodule', 'TrainController@delTrain');  
+            // 信息化技术代码表
+            Route::get('infortech', 'InforTechnologyController@infortechList');
+            Route::get('infortechs', 'InforTechnologyController@getInfortech');
+            Route::get('infortech/create', 'InforTechnologyController@addInfortech');
+            Route::post('infortech', 'InforTechnologyController@addInfortech');
+            Route::get('infortech/{id}/edit', 'InforTechnologyController@editInfortech');
+            Route::put('infortech', 'InforTechnologyController@editInfortech');
+            Route::delete('infortech', 'InforTechnologyController@delInfortech');
+            // 培训方向代码表
+             Route::get('traindirection', 'TrainDirectionController@trainDirectionList');
+            Route::get('traindirections', 'TrainDirectionController@getTrainDirection');
+            Route::get('traindirection/create', 'TrainDirectionController@addTrainDirection');
+            Route::post('traindirection', 'TrainDirectionController@addTrainDirection');
+            Route::get('traindirection/{id}/edit', 'TrainDirectionController@editTrainDirection');
+            Route::put('traindirection', 'TrainDirectionController@editTrainDirection');
+            Route::delete('traindirection', 'TrainDirectionController@delTrainDirection');
+        });
+    });
+    // 完善人事信息
+    Route::get('completeuserinfo', 'Registercontroller@completeUserInfo')->middleware('checkifregister');
+    Route::post('completeuserinfo', 'Registercontroller@completeUserInfo')->middleware('checkifregister');
+    Route::post('completeuserinfo/upload', 'Registercontroller@uploadFace')->middleware('checkifregister');
+
+    // 完善鉴定信息
+    Route::get('completeidentifyinfolist', 'IdentifyinfoController@IdentifyInfoList')->middleware('checkifregister');
+    Route::get('completeidentifyinfos', 'IdentifyinfoController@getIdentifyInfos');
+    Route::get('completeidentifyinfo', 'IdentifyinfoController@completeIdentifyInfo');
+    Route::post('completeidentifyinfo', 'IdentifyinfoController@completeIdentifyInfo');
+    Route::post('myidentifynum', 'IdentifyinfoController@myIdentifyNum');
+    Route::post('completeidentifyinfo/upload', 'IdentifyinfoController@uploadMyzs');
+    Route::get('completeidentifyinfo/{id}/edit', 'IdentifyinfoController@editIdentifyInfo');
+    Route::put('completeidentifyinfo', 'IdentifyinfoController@editIdentifyInfo');
+    Route::delete('completeidentifyinfo', 'IdentifyinfoController@delIdentifyInfo');
+    Route::get('lookmyidentifyinfo/{id}', 'IdentifyinfoController@lookMyIdentifyInfo');
 });

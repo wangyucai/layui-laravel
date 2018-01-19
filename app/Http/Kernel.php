@@ -58,5 +58,7 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'rbac' => \App\Http\Middleware\Rbac::class,
+        'checkifregister' => \App\Http\Middleware\CheckIfRegister::class,
+        'edituserbutton' => \App\Http\Middleware\EditUserButton::class,
     ];
 }

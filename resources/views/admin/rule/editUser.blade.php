@@ -17,16 +17,30 @@
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label">邮箱</label>
+		<label class="layui-form-label">单位</label>
 			<div class="layui-input-block">
-				<input type="text" class="layui-input" name="email" value="{{$admin['email']}}" lay-verify="email" placeholder="请输入邮箱">
-			</div>
+		      	<select name="company_dwdm" lay-filter="danwei" lay-verify="required|danwei">
+			        <option value="">请选择单位</option>
+			       	@foreach($danwei as $v)
+			       		<option 
+			       		@if($v->dwdm==$admin['company_dwdm']) 
+			       			selected="selected" 
+			       	    @endif 
+			       		value="{{ $v->dwdm }}">{{ $v->html }}{{ $v->dwqc }}</option>
+			       	@endforeach
+		      	</select>
+		    </div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label">手机号</label>
+		<label class="layui-form-label">单位级别</label>
 			<div class="layui-input-block">
-				<input type="text" class="layui-input" name="tel" value="{{$admin['tel']}}" lay-verify="required" placeholder="请输入手机号">
-			</div>
+		      	<select name="dwjb" lay-filter="dwjb" lay-verify="required">
+			        <option value="">请选择单位级别</option>
+			       	<option value="2" @if($admin['dwjb']==2) selected="selected" @endif>省级</option>
+			       	<option value="3" @if($admin['dwjb']==3) selected="selected" @endif>市级</option>
+			       	<option value="4" @if($admin['dwjb']==4) selected="selected" @endif>县级</option>
+		      	</select>
+		    </div>
 		</div>
 		<input type="hidden" name="id" value="{{$admin['id']}}">
 		<div class="layui-form-item">

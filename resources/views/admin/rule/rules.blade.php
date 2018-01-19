@@ -16,14 +16,14 @@
 	<div class="layui-form links_list">
 	  	<table class="layui-table tree">
 		    <colgroup>
-				<col width="100px">
-				<col width="">
+				<col width="10%">
+				<col width="20%">
 				<col>
 				<col>
-				<col width="20px">
-				<col width="20px">
 				<col width="7%">
-				<col width="">
+				<col width="7%">
+				<col width="7%">
+				<col width="20%">
 		    </colgroup>
 		    <thead>
 				<tr>

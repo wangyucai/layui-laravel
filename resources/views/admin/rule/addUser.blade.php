@@ -29,16 +29,26 @@
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label">邮箱</label>
+		<label class="layui-form-label">单位</label>
 			<div class="layui-input-block">
-				<input type="text" class="layui-input" name="email" lay-verify="email" placeholder="请输入邮箱">
-			</div>
+		      	<select name="company_dwdm" lay-filter="danwei" lay-verify="required|danwei">
+			        <option value="">请选择单位</option>
+			       	@foreach($danwei as $v)
+			       		<option value="{{ $v->dwdm }}">{{ $v->html }}{{ $v->dwqc }}</option>
+			       	@endforeach
+		      	</select>
+		    </div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label">手机号</label>
+		<label class="layui-form-label">单位级别</label>
 			<div class="layui-input-block">
-				<input type="text" class="layui-input" name="tel" lay-verify="required" placeholder="请输入手机号">
-			</div>
+		      	<select name="dwjb" lay-filter="dwjb" lay-verify="required">
+			        <option value="">请选择单位级别</option>
+			       	<option value="2">省级</option>
+			       	<option value="3">市级</option>
+			       	<option value="4">县级</option>
+		      	</select>
+		    </div>
 		</div>
 		<div class="layui-form-item">
 			<div class="layui-input-block">

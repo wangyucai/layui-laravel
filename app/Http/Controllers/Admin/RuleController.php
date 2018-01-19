@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Model\Admin;
 use App\Model\Role;
 use App\Model\Rule;
+use App\Model\Company;
 use App\Service\AdminService;
 use App\Service\RuleService;
 use Illuminate\Http\Request;
@@ -189,7 +190,7 @@ class RuleController extends Controller
     }
 
     /**
-     * 获取后台用户分页数据
+     * 获取后台系统管理员分页数据
      * @param Request $request
      * @param Admin $admin
      * @return \Illuminate\Http\JsonResponse
@@ -212,14 +213,18 @@ class RuleController extends Controller
                 'username' => 'required',
                 'password' => 'required',
                 'password_confirmation' => 'required',
+                'company_dwdm' => 'required',
+                'dwjb' => 'required',
             ]);
             $adminService = new AdminService();
             $re = $adminService->addAdmin($request->all());
             if (!$re) return ajaxError($adminService->getError(), $adminService->getHttpCode());
             return ajaxSuccess([], '', 'success', HttpCode::CREATED);
         } else {
+            $companies = Company::where('dwdm','!=','100000')->get();
+            $danwei = select_company('sjdm', 'dwdm', $companies, '100000', '=', '1');
             $roles = Role::all();
-            return view('admin.rule.addUser', ['roles' => $roles]);
+            return view('admin.rule.addUser', ['roles' => $roles, 'danwei' => $danwei]);
         }
     }
 
@@ -239,6 +244,8 @@ class RuleController extends Controller
             if (!$re) return ajaxError($adminService->getError(), $adminService->getHttpCode());
             return ajaxSuccess();
         } else {
+            $companies = Company::where('dwdm','!=','100000')->get();
+            $danwei = select_company('sjdm', 'dwdm', $companies, '100000', '=', '1');
             $roles = Role::all()->toArray();
             $admin = Admin::with('roles')->find($request->id)->toArray();
             $hasRoles = array_column($admin['roles'], 'id');
@@ -249,7 +256,7 @@ class RuleController extends Controller
                     $role['checked'] = 0;
                 }
             }
-            return view('admin.rule.editUser', ['roles' => $roles, 'admin' => $admin]);
+            return view('admin.rule.editUser', ['roles' => $roles, 'admin' => $admin, 'danwei'=>$danwei]);
         }
     }
 

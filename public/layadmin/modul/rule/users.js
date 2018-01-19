@@ -11,11 +11,14 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], 
         ,page: true //开启分页
         ,limit: 10
         ,limits: [10, 20]
+        ,where: {
+                user_type: 0
+            }
         ,cols: [[ //表头
             {field: 'id', title: 'ID', width:80, sort: true, fixed: 'left', align: 'left'}
             ,{field: 'username', title: '用户名'}
-            ,{field: 'email', title: '邮箱'}
-            ,{field: 'tel', title: '手机号'}
+            ,{field: 'dwqc', title: '单位'}
+            ,{field: 'dwjb', title: '单位级别'}
             ,{field: 'status', title: '是否启用', width: 80, templet: '#active'}
             ,{title: '操作', width: 160, toolbar: '#op'}
         ]]

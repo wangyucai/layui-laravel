@@ -48,7 +48,11 @@
                 {{--</li>--}}
                 <li class="layui-nav-item" pc>
                     <a href="javascript:;">
+                        @if($user->face)
+                        <img src="{{ $user->face }}" class="layui-circle" width="35" height="35">
+                        @else
                         <img src="/layadmin/modul/index/face.jpg" class="layui-circle" width="35" height="35">
+                        @endif
                         <cite>{{$user->username}}</cite>
                     </a>
                     <dl class="layui-nav-child">

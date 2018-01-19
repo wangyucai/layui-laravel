@@ -1,7 +1,7 @@
 @extends("admin.layout.main")
 
 @section("content")
-    <div class="row" style="margin-top: 50px;">
+    <div class="row">
         <div>
             <blockquote class="layui-elem-quote title">系统基本参数</blockquote>
             <table class="layui-table">

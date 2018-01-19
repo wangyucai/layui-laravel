@@ -9,7 +9,7 @@
 		    <a class="layui-btn search_btn">查询</a>
 		</div>
 		<div class="layui-inline">
-			<a class="layui-btn layui-btn-normal add_btn">添加管理员</a>
+			<a class="layui-btn layui-btn-normal add_btn">添加系统管理员</a>
 		</div>
 		<div class="layui-inline">
 			<div class="layui-form-mid layui-word-aux"></div>

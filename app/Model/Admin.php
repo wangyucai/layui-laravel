@@ -6,7 +6,22 @@ use Illuminate\Foundation\Auth\User;
 
 class Admin extends User
 {
-    protected $fillable = ['username', 'password','email', 'tel', 'status'];
+    protected $fillable = [
+                'username', 'password','dwjb', 'tel', 
+                'tel_hm', 'company_dwdm', 'mechanism_code','mechanism_id',
+                'status','real_name', 'sex', 'birth',
+                'nation','native_place','native_heath',
+                'political_outlook','join_party_time',
+                'join_work_time','id_number',
+                'join_procuratorate_time',
+                'join_technical_department_time',
+                'if_work','education','academic_degree',
+                'major_school','major_degree_school',
+                'get_education_time','get_academic_degree_time',
+                'procurator','administrative_duties',
+                'administrative_level','technician_title',
+                'resume','dwjb','face','register_if_check'   
+            ];
     protected $rulesCacheKey = 'rules_cache_v1';
 
     const ACTIVE_STATUS = 1;
@@ -21,6 +36,12 @@ class Admin extends User
     {
         return $this->belongsToMany('App\Model\Role', 'admin_role', 'admin_id', 'role_id');
     }
+
+    // Admin-Company:One-One
+    // public function company()
+    // {
+    //     return $this->hasOne('App\Model\Company', 'companies', 'company_id');
+    // }
 
     /**
      * 获取用户权限
@@ -64,7 +85,10 @@ class Admin extends User
         $rules = $this->getRules($adminId);
         session([$this->rulesCacheKey => $rules]);
     }
-
+    /**
+     * 获取系统管理员分页数据
+     * @return array
+     */
     public function getAdmins(array $param) : array
     {
         $page = $param['page'];
@@ -74,16 +98,110 @@ class Admin extends User
         $order = $param['order'] ?? 'asc';
         if ($where) $where = [['username', 'like', $where.'%']];
         $offset = ($page - 1) * $limit;
-        $admins = $this->where($where)->select('id', 'username', 'tel', 'email', 'status')
-            ->offset($offset)->limit($limit)->orderBy($sortfield, $order)->get()->toArray();
-        $count = $this->where($where)->count();
+        // 获取系统管理员
+        $admins = $this->where('tel_hm',null)
+                       ->where($where)
+                       ->leftJoin('companies', 'admins.company_dwdm', '=', 'companies.dwdm')
+                       ->select('admins.id', 'admins.username','admins.dwjb','admins.status', 'companies.dwqc')
+                       ->offset($offset)->limit($limit)->orderBy($sortfield, $order)
+                       ->get()
+                       ->toArray();
+        $count = $this->where('tel_hm',null)
+                       ->where($where)
+                       ->leftJoin('companies', 'admins.company_dwdm', '=', 'companies.dwdm')
+                       ->select('admins.id', 'admins.username','admins.dwjb','admins.status', 'companies.dwqc')->count();
         return [
             'count' => $count,
             'data' => $admins
         ];
 
     }
+    /**
+     * 获取注册用户分页数据
+     * @return array
+     */
+    public function getRegisterUsers(array $param) : array
+    {
+        $page = $param['page'];
+        $limit = $param['limit'];
+        $where = $param['cond'] ?? [];
+        $sortfield = $param['sortField'] ?? 'id';
+        $order = $param['order'] ?? 'asc';
+        if ($where) $where = [['username', 'like', $where.'%']];
+        $offset = ($page - 1) * $limit;
+        $where1 =  $param['company_dwdm']!=100000 ? $param['company_dwdm'] : [];      
+        $where2 =  $param['dwjb']==3 ? $param['next_companies_dwdm'] : [];
+        if ($where1) $where1 = [['admins.company_dwdm', $where1]];
+        $admins = $this->where('tel_hm','!=',null)
+                   ->where($where1)
+                   ->where(function ($where2) {
+                        $where2 ?: $where->orwhereIn('admins.company_dwdm', '=', $where2);
+                    })
+                   ->where($where)
+                   ->leftJoin('mechanisms', 'mechanisms.id', '=', 'admins.mechanism_id')
+                   ->leftJoin('companies', 'mechanisms.company_dwdm', '=', 'companies.dwdm')
+                   ->select('admins.id', 'admins.username', 'admins.tel', 'admins.tel_hm', 'admins.register_if_check','mechanisms.nsjgmc','companies.dwqc')
+                   ->offset($offset)->limit($limit)->orderBy($sortfield, $order)
+                   ->get()
+                   ->toArray();     
+        $count = $this->where('tel_hm','!=',null)
+                  ->where($where1)
+                   ->where(function ($where2) {
+                        $where2 ?: $where->orwhereIn('admins.company_dwdm', '=', $where2);
+                    })
+                   ->where($where)
+                   ->leftJoin('mechanisms', 'mechanisms.id', '=', 'admins.mechanism_id')
+                   ->leftJoin('companies', 'mechanisms.company_dwdm', '=', 'companies.dwdm')
+                   ->count();
+        return [
+            'count' => $count,
+            'data' => $admins
+        ];
 
+    }
+    /**
+     * 获取完善信息用户分页数据
+     * @return array
+     */
+    public function getCompleteInfoUsers(array $param) : array
+    {
+        $page = $param['page'];
+        $limit = $param['limit'];
+        $where = $param['cond'] ?? [];
+        $sortfield = $param['sortField'] ?? 'id';
+        $order = $param['order'] ?? 'asc';
+        if ($where) $where = [['username', 'like', $where.'%']];
+        $offset = ($page - 1) * $limit;
+        $where1 =  $param['company_dwdm']!=100000 ? $param['company_dwdm'] : [];      
+        $where2 =  $param['dwjb']==3 ? $param['next_companies_dwdm'] : [];
+        if ($where1) $where1 = [['admins.company_dwdm', $where1]];
+        $admins = $this->where('real_name','!=',null)
+                           ->where($where1)
+                           ->where(function ($where2) {
+                                $where2 ?: $where->orwhereIn('admins.company_dwdm', '=', $where2);
+                            })
+                           ->where($where)
+                           ->leftJoin('mechanisms', 'mechanisms.id', '=', 'admins.mechanism_id')
+                           ->leftJoin('companies', 'mechanisms.company_dwdm', '=', 'companies.dwdm')
+                           ->select('admins.id', 'admins.real_name', 'admins.tel',  'admins.perinfor_if_check','mechanisms.nsjgmc','companies.dwqc')
+                           ->offset($offset)->limit($limit)->orderBy($sortfield, $order)
+                           ->get()
+                           ->toArray();
+        $count = $this->where('real_name','!=',null)
+                           ->where($where1)
+                           ->where(function ($where2) {
+                                $where2 ?: $where->orwhereIn('admins.company_dwdm', '=', $where2);
+                            })
+                           ->where($where)
+                           ->leftJoin('mechanisms', 'mechanisms.id', '=', 'admins.mechanism_id')
+                           ->leftJoin('companies', 'mechanisms.company_dwdm', '=', 'companies.dwdm')
+                           ->count();
+        return [
+            'count' => $count,
+            'data' => $admins
+        ];
+
+    }
 
     /**
      * 获取菜单

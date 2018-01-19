@@ -28,14 +28,20 @@ class Rbac
         throw new RbacException(RbacException::NOT_RULE);
         return $next($request);
     }
-
+    /**
+     *  获取当前的控制器或者方法名
+     *  如：Registercontroller@registerList
+    */
     public function getCurrentRule()
     {
+        // "App\Http\Controllers\Admin\Registercontroller@registerList"
         $origRule = Route::current()->getActionName();
         $rule = substr($origRule, strlen($this->prefix));
         return strtolower($rule);
     }
-
+    /**
+     *  获取用户是否有当前路由的权限
+    */
     public function getRules()
     {
         $id = Auth::guard('admin')->id();
