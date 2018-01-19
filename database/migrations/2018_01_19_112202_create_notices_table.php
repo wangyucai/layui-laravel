@@ -21,6 +21,7 @@ class CreateNoticesTable extends Migration
             $table->text('content2')->nullable()->comment('培训模块通知内容');
             $table->string('attachment',500)->nullable()->comment('通知的附件地址');
             $table->char('notice_yxq',10)->comment('通知的有效期');
+            $table->tinyInteger('if_expire')->default(0)->comment('默认未过期，1代表过期');       
             $table->string('from_dw',100)->comment('发布通知的单位');
             $table->tinyInteger('type')->comment('通知类型');
             $table->integer('px_id')->unsigned()->comment('如果是培训通知就有培训id');

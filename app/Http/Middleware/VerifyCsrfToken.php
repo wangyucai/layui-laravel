@@ -33,5 +33,6 @@ class VerifyCsrfToken extends Middleware
         ,'/admin/traindirection'
         ,'/admin/noticetype'
         ,'/admin/notice'
+        ,'/admin/notice/upload'
     ];
 }

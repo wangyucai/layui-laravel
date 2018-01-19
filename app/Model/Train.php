@@ -71,6 +71,7 @@ class Train extends Model
         // $xxhjs_arr = DB::table('infor_technology')->select('xxhjs_code','xxhjs_name')->get()->pluck('xxhjs_name', 'xxhjs_code')->toArray();
         // 拼接数组
         foreach ($train as $k => $v) {
+            if($v['px_end_time']<time()) $v['if_expire'] = 1;
             // 把培训时间转成日期格式
             $v['px_start_time'] = date('Y-m-d',$v['px_start_time']);
             $v['px_end_time'] = date('Y-m-d',$v['px_end_time']);

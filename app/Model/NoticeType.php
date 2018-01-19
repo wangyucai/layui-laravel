@@ -18,7 +18,7 @@ class NoticeType extends Model
        $where = $param['cond'] ?? [];
        $sortfield = $param['sortField'] ?? 'id';
        $order = $param['order'] ?? 'asc';
-       if ($where) $where = [['notice_type_code','like', '%'.$where.'%']];
+       if ($where) $where = [['notice_type_name','like', '%'.$where.'%']];
        $offset = ($page - 1) * $limit;
        $noticetypes = $this->where($where)
                              ->offset($offset)

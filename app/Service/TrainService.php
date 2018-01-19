@@ -57,6 +57,7 @@ class TrainService extends BaseService
         $px_start_time = strtotime($data['px_start_time']);
         $px_end_time = strtotime($data['px_end_time']);
         if($px_end_time<time()) $data['if_expire'] = 1;
+            $data['if_expire'] = 0;
         $data['px_time'] = $px_end_time - $px_start_time;
         // 手动开启事务
         DB::beginTransaction();

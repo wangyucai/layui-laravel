@@ -181,6 +181,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             Route::get('notices', 'NoticeController@getNotice');
             Route::get('notice/create', 'NoticeController@addNotice');
             Route::post('notice', 'NoticeController@addNotice');
+            Route::post('notice/upload', 'NoticeController@uploadAttachment');
             Route::get('notice/{id}/edit', 'NoticeController@editNotice');
             Route::put('notice', 'NoticeController@editNotice');
             Route::delete('notice', 'NoticeController@delNotice');

@@ -1,0 +1,136 @@
+<?php
+
+namespace App\Service;
+
+
+use App\Common\Enum\HttpCode;
+use App\Model\Notice;
+use App\Model\Admin;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
+
+class NoticeService extends BaseService
+{
+    /**
+     * 添加通知
+     * @param $data
+     * @return array|bool
+     */
+    public function addNotice(array $data) : bool
+    {
+        $data['notice_yxq'] = strtotime($data['notice_yxq']);
+        $data['notice_dwdm'] = serialize(explode(',', $data['notice_dwdm']));
+        unset($data['file']);
+        unset($data['token']);
+        DB::beginTransaction();
+        $notice = Notice::create($data);
+        // 分发任务--队列实现
+        // dispatch(new \App\Jobs\SendMessage($notice));
+        // 非队列实现
+        $this->sendNotices($notice);
+        if (!$notice) {
+            $this->error = '添加失败';
+            $this->httpCode = HttpCode::BAD_REQUEST;
+            DB::rollBack();
+            return false;
+        }
+        DB::commit();
+        return true;
+    }
+    /**
+     * 发送通知给指定单位用户
+     * @param $data
+     * @return array|bool
+     */
+    public function sendNotices($notice)
+    {
+        // 获取通知发送给哪个单位级别的人
+        $notice_dwdm = $notice->notice_dwdm;
+        $notice_dwdm_arr = unserialize($notice_dwdm);
+        // 通知用户系统消息
+        $users = Admin::whereIn('company_dwdm',$notice_dwdm_arr)->where('tel_hm','!=','')->get();
+        foreach($users as $user){
+            $user->addNotice($notice);
+            // 每发送一条通知就给通知的用户未读通知书+1
+            $no_notice_count = $user->no_notice_count+1;
+            DB::update("update gzjcy_admins set no_notice_count = '{$no_notice_count}' where id = '{$user->id}'");
+        }
+    }
+    /**
+     * 编辑通知
+     * @param $data
+     * @return bool
+     */
+    public function editNotice(array $data) : bool
+    {
+        $data['notice_yxq'] = strtotime($data['notice_yxq']);
+        $data['notice_dwdm'] = serialize(explode(',', $data['notice_dwdm']));
+        unset($data['file']);
+        $notice = Notice::find($data['id']);
+        $notice_dwdm_arr = unserialize($notice->notice_dwdm);
+        // 手动开启事务
+        DB::beginTransaction();
+        $notice->title          = $data['title'];
+        $notice->type           = $data['type'];
+        $notice->content        = $data['content'];
+        if($data['type'] == '02')   $notice->content2  = $data['content2'];
+        $notice->from_dw        = $data['from_dw'];
+        $notice->notice_dwdm    = $data['notice_dwdm'];
+        $notice->from_dwdm      = $data['from_dwdm'];
+        if(isset($data['attachment'])){
+            $identifyinfo->attachment = $data['attachment'];
+        }
+        $this->delNotices($notice,$notice_dwdm_arr);
+        $this->sendNotices($notice);
+        $re = $notice->save();   
+        if ($re === false) {
+            $this->error = '修改失败';
+            $this->httpCode = HttpCode::BAD_REQUEST;
+            DB::rollBack();
+            return false;
+        }
+        DB::commit();
+        return true;
+    }
+    /**
+     * 删除指定单位用户的通知
+     * @param $data
+     * @return array|bool
+     */
+    public function delNotices($notice, $notice_dwdm_arr)
+    {
+        // 通知用户系统消息
+        $users = Admin::whereIn('company_dwdm',$notice_dwdm_arr)->where('tel_hm','!=','')->get();
+
+        foreach($users as $user){
+            $user->deleteNotice($notice);
+            $no_notice_count = $user->no_notice_count-1;
+            DB::update("update gzjcy_admins set no_notice_count = '{$no_notice_count}' where id = '{$user->id}'");
+        }
+    }
+    /**
+     * 删除通知
+     * @param $data
+     * @return bool
+     */
+    public function delNotice(int $noticeId) : bool
+    {
+        $notice = Notice::find($noticeId);
+        if (!$notice) {
+            $this->error = '该通知类型不存在';
+            $this->httpCode = HttpCode::GONE;
+            return false;
+        }
+        DB::beginTransaction();
+        $re = $notice->delete();
+        if ($re === false) {
+            $this->error = '删除失败';
+            $this->httpCode = HttpCode::BAD_REQUEST;
+            DB::rollBack();
+            return false;
+        }
+        DB::commit();
+        return true;
+    }
+}

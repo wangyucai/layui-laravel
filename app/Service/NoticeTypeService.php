@@ -69,16 +69,16 @@ class NoticeTypeService extends BaseService
      * @param $data
      * @return bool
      */
-    public function delNoticeType(int $trainDirectionId) : bool
+    public function delNoticeType(int $noticeTypeId) : bool
     {
-        $trainDirection = NoticeType::find($trainDirectionId);
-        if (!$trainDirection) {
+        $noticeType = NoticeType::find($noticeTypeId);
+        if (!$noticeType) {
             $this->error = '该通知类型不存在';
             $this->httpCode = HttpCode::GONE;
             return false;
         }
         DB::beginTransaction();
-        $re = $trainDirection->delete();
+        $re = $noticeType->delete();
         if ($re === false) {
             $this->error = '删除失败';
             $this->httpCode = HttpCode::BAD_REQUEST;

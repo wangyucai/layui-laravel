@@ -36,13 +36,6 @@ class Admin extends User
     {
         return $this->belongsToMany('App\Model\Role', 'admin_role', 'admin_id', 'role_id');
     }
-
-    // Admin-Company:One-One
-    // public function company()
-    // {
-    //     return $this->hasOne('App\Model\Company', 'companies', 'company_id');
-    // }
-
     /**
      * 获取用户权限
      * @param $adminId
@@ -286,4 +279,22 @@ class Admin extends User
         }
         return $menu;
     }
+
+    // 用户收到的通知
+    public function notices()
+    {
+        return $this->belongsToMany(\App\Model\Notice::class,'user_notice','user_id','notice_id')->withPivot(['user_id','notice_id','if_read','if_down']);
+    }
+
+    // 给用户增加通知
+    public function addNotice($notice)
+    {
+        return $this->notices()->save($notice);
+    }
+    // 删除用户通知
+    public function deleteNotice($notice)
+    {
+      return $this->notices()->detach($notice);//删除通知：detach
+    }
+
 }
