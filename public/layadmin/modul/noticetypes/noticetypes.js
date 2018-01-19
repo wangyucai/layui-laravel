@@ -5,8 +5,8 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], 
         ,$ = layui.$;
 
     table.render({
-        elem: '#traindirections'
-        ,url: '/admin/traindirections' //数据接口
+        elem: '#noticetypes'
+        ,url: '/admin/noticetypes' //数据接口
         ,method: 'get'
         ,page: true //开启分页
         ,limit: 10
@@ -17,8 +17,8 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], 
         }    
         ,cols: [[ //表头
             {field: 'id', title: 'ID', width:80, sort: true, fixed: 'left', align: 'left'}
-            ,{field: 'pxfx_code', title: '培训方向代码'}
-            ,{field: 'pxfx_name', title: '培训方向名称'}
+            ,{field: 'notice_type_code', title: '通知类型代码'}
+            ,{field: 'notice_type_name', title: '通知类型名称'}
             ,{title: '操作', width: 160, toolbar: '#op'}
         ]]
         ,response: {
@@ -31,18 +31,18 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], 
         ,even: false //开启隔行背景
     });
 
-    table.on('tool(traindirectiontab)', function(obj){
+    table.on('tool(noticetypetab)', function(obj){
         var data = obj.data;      //获得当前行数据
         var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
         var tr = obj.tr;          //获得当前行 tr 的DOM对象
 
         if (layEvent == 'edit') {
-            dialog.open('编辑培训方向代码', '/admin/traindirection/'+data.id+'/edit');
+            dialog.open('编辑通知类型', '/admin/noticetype/'+data.id+'/edit');
         } else if (layEvent == 'del') {
-            dialog.confirm('确认删除该培训方向代码么', function () {
+            dialog.confirm('确认删除该通知类型么', function () {
                 var loadIndex = dialog.load('删除中，请稍候');
                 his.ajax({
-                    url: '/admin/traindirection'
+                    url: '/admin/noticetype'
                     ,type: 'delete'
                     ,data: {id: data.id}
                     ,complete: function () {
@@ -74,7 +74,7 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], 
             query.where.sortField = sortObj.field;   // 排序字段
             query.where.order = sortObj.type;        //排序方式
         }
-        table.reload('traindirections', query);
+        table.reload('noticetypes', query);
     }
 
     // 搜索
@@ -84,13 +84,13 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], 
     });
 
     // 排序
-    table.on('sort(traindirectiontab)', function (obj) {
+    table.on('sort(noticetypetab)', function (obj) {
         var cond = $('.search_input').val();
         flushTable(cond, obj);
     });
 
-    // 添加培训方向代码
+    // 添加通知类型
     $('.add_btn').click(function () {
-        dialog.open('添加培训方向代码', '/admin/traindirection/create');
+        dialog.open('添加通知类型', '/admin/noticetype/create');
     });
 });

@@ -5,19 +5,19 @@
 	<form class="layui-form layui-form-pane">
 		<div class="layui-inline">
 		    <div class="layui-input-inline">
-		    	<input type="text" value="" placeholder="培训方向名称" class="layui-input search_input">
+		    	<input type="text" value="" placeholder="通知类型名称" class="layui-input search_input">
 		    </div>
 		    <a class="layui-btn search_btn">查询</a>
 		</div>
 		<div class="layui-inline">
-			<a class="layui-btn layui-btn-normal add_btn">添加培训方向代码</a>
+			<a class="layui-btn layui-btn-normal add_btn">添加通知类型</a>
 		</div>
 		<div class="layui-inline">
 			<div class="layui-form-mid layui-word-aux"></div>
 		</div>
 	</form>
 	</blockquote>
-	<table id="traindirections" lay-filter="traindirectiontab"></table>
+	<table id="noticetypes" lay-filter="noticetypetab"></table>
 
 @endsection
 
@@ -32,5 +32,5 @@
 			删除
 		</a>
 	</script>
-	<script type="text/javascript" src="/layadmin/modul/traindirections/traindirections.js"></script>
+	<script type="text/javascript" src="/layadmin/modul/noticetypes/noticetypes.js"></script>
 @endsection

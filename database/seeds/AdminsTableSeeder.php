@@ -12,11 +12,14 @@ class AdminsTableSeeder extends Seeder
     public function run()
     {
         \Illuminate\Support\Facades\DB::table('admins')->insert([
-            'username' => 'admin',
-            'password' => password_hash('admin888', PASSWORD_DEFAULT, ['cost' => 12]),
-            'email' => '2531072685@qq.com',
-            'tel' => '1508272311',
-            'status' => 1
+            'username' => 'superadmin',
+            'password' => password_hash('123456', PASSWORD_DEFAULT, ['cost' => 12]),
+            'email' => '122222222@qq.com',
+            'tel' => '18512557921',
+            'status' => 1,
+            'company_dwdm' => 100000,
+            'dwjb' => 2,
+            'register_if_check' => 1,
         ]);
     }
 }

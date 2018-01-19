@@ -4,29 +4,29 @@ namespace App\Service;
 
 
 use App\Common\Enum\HttpCode;
-use App\Model\TrainDirection;
+use App\Model\NoticeType;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 
-class TrainDirectionService extends BaseService
+class NoticeTypeService extends BaseService
 {
     /**
-     * 添加培训方向代码
+     * 添加通知类型
      * @param $data
      * @return array|bool
      */
-    public function addTrainDirection(array $data) : bool
+    public function addNoticeType(array $data) : bool
     {
-        $has = TrainDirection::where('pxfx_code', $data['pxfx_code'])->count();
+        $has = NoticeType::where('notice_type_code', $data['notice_type_code'])->count();
         if ($has > 0) {
             $this->error = '该培训方向代码已存在';
             $this->httpCode = HttpCode::CONFLICT;
             return false;
         }
         DB::beginTransaction();
-        $trainDirection = TrainDirection::create($data);
-        if (!$trainDirection) {
+        $noticeType = NoticeType::create($data);
+        if (!$noticeType) {
             $this->error = '添加失败';
             $this->httpCode = HttpCode::BAD_REQUEST;
             DB::rollBack();
@@ -37,24 +37,24 @@ class TrainDirectionService extends BaseService
     }
 
     /**
-     * 编辑培训方向代码
+     * 编辑通知类型
      * @param $data
      * @return bool
      */
-    public function editTrainDirection(array $data) : bool
+    public function editNoticeType(array $data) : bool
     {
-        $has = TrainDirection::where('pxfx_code', $data['pxfx_code'])->where('id', '!=', $data['id'])->count();
+        $has = NoticeType::where('notice_type_code', $data['notice_type_code'])->where('id', '!=', $data['id'])->count();
         if ($has > 0) {
-            $this->error = '该培训方向代码已存在';
+            $this->error = '该通知类型已存在';
             $this->httpCode = HttpCode::CONFLICT;
             return false;
         }
-        $trainDirection = TrainDirection::find($data['id']);
+        $noticeType = NoticeType::find($data['id']);
         // 手动开启事务
         DB::beginTransaction();
-        $trainDirection->pxfx_code    = $data['pxfx_code'];
-        $trainDirection->pxfx_name    = $data['pxfx_name'];
-        $re = $trainDirection->save();
+        $noticeType->notice_type_code    = $data['notice_type_code'];
+        $noticeType->notice_type_name    = $data['notice_type_name'];
+        $re = $noticeType->save();
         if ($re === false) {
             $this->error = '修改失败';
             $this->httpCode = HttpCode::BAD_REQUEST;
@@ -65,15 +65,15 @@ class TrainDirectionService extends BaseService
         return true;
     }
     /**
-     * 删除培训方向代码
+     * 删除通知类型
      * @param $data
      * @return bool
      */
-    public function delTrainDirection(int $trainDirectionId) : bool
+    public function delNoticeType(int $trainDirectionId) : bool
     {
-        $trainDirection = TrainDirection::find($trainDirectionId);
+        $trainDirection = NoticeType::find($trainDirectionId);
         if (!$trainDirection) {
-            $this->error = '该培训方向代码不存在';
+            $this->error = '该通知类型不存在';
             $this->httpCode = HttpCode::GONE;
             return false;
         }

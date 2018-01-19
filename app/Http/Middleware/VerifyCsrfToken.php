@@ -31,5 +31,7 @@ class VerifyCsrfToken extends Middleware
         ,'/admin/trainmodule'
         ,'/admin/infortech'
         ,'/admin/traindirection'
+        ,'/admin/noticetype'
+        ,'/admin/notice'
     ];
 }

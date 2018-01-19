@@ -81,19 +81,19 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
              * 人员管理系统
             */
             // 注册用户管理
-            Route::get('registeruser', 'Registercontroller@registerList');
-            Route::get('registerusers', 'Registercontroller@getRegisterUsers');
-            Route::get('registeruser/{id}/edit', 'Registercontroller@editRegisterUser')->middleware('edituserbutton');
-            Route::put('registeruser', 'Registercontroller@editRegisterUser');
-            Route::patch('registeruser', 'Registercontroller@activeRegisterUser');
-            // Route::delete('registeruser', 'Registercontroller@delAdmin');     
+            Route::get('registeruser', 'RegisterController@registerList');
+            Route::get('registerusers', 'RegisterController@getRegisterUsers');
+            Route::get('registeruser/{id}/edit', 'RegisterController@editRegisterUser')->middleware('edituserbutton');
+            Route::put('registeruser', 'RegisterController@editRegisterUser');
+            Route::patch('registeruser', 'RegisterController@activeRegisterUser');
+            // Route::delete('registeruser', 'RegisterController@delAdmin');     
             // 完善人事信息用户管理
-            Route::get('completeinfouser', 'Registercontroller@completeInfoUserList');
-            Route::get('completeinfousers', 'Registercontroller@getCompleteInfoUsers');
+            Route::get('completeinfouser', 'RegisterController@completeInfoUserList');
+            Route::get('completeinfousers', 'RegisterController@getCompleteInfoUsers');
             Route::get('completeinfouser/{id}/edit', 'Registercontroller@editCompleteInfoUser')->middleware('edituserbutton');
-            Route::put('completeinfouser', 'Registercontroller@editCompleteInfoUser');
-            Route::patch('completeinfouser', 'Registercontroller@activeCompleteInfoUser');
-            // Route::delete('completeinfouser', 'Registercontroller@delAdmin');
+            Route::put('completeinfouser', 'RegisterController@editCompleteInfoUser');
+            Route::patch('completeinfouser', 'RegisterController@activeCompleteInfoUser');
+            // Route::delete('completeinfouser', 'RegisterController@delAdmin');
             /*
              * 机构管理系统
             */
@@ -157,19 +157,39 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             Route::put('infortech', 'InforTechnologyController@editInfortech');
             Route::delete('infortech', 'InforTechnologyController@delInfortech');
             // 培训方向代码表
-             Route::get('traindirection', 'TrainDirectionController@trainDirectionList');
+            Route::get('traindirection', 'TrainDirectionController@trainDirectionList');
             Route::get('traindirections', 'TrainDirectionController@getTrainDirection');
             Route::get('traindirection/create', 'TrainDirectionController@addTrainDirection');
             Route::post('traindirection', 'TrainDirectionController@addTrainDirection');
             Route::get('traindirection/{id}/edit', 'TrainDirectionController@editTrainDirection');
             Route::put('traindirection', 'TrainDirectionController@editTrainDirection');
             Route::delete('traindirection', 'TrainDirectionController@delTrainDirection');
+
+            /*
+             * 通知管理
+            */
+            // 通知类型表
+            Route::get('noticetype', 'NoticeTypeController@noticeTypeList');
+            Route::get('noticetypes', 'NoticeTypeController@getNoticeType');
+            Route::get('noticetype/create', 'NoticeTypeController@addNoticeType');
+            Route::post('noticetype', 'NoticeTypeController@addNoticeType');
+            Route::get('noticetype/{id}/edit', 'NoticeTypeController@editNoticeType');
+            Route::put('noticetype', 'NoticeTypeController@editNoticeType');
+            Route::delete('noticetype', 'NoticeTypeController@delNoticeType');
+            // 通知列表
+            Route::get('notice', 'NoticeController@noticeList');
+            Route::get('notices', 'NoticeController@getNotice');
+            Route::get('notice/create', 'NoticeController@addNotice');
+            Route::post('notice', 'NoticeController@addNotice');
+            Route::get('notice/{id}/edit', 'NoticeController@editNotice');
+            Route::put('notice', 'NoticeController@editNotice');
+            Route::delete('notice', 'NoticeController@delNotice');
         });
     });
     // 完善人事信息
-    Route::get('completeuserinfo', 'Registercontroller@completeUserInfo')->middleware('checkifregister');
-    Route::post('completeuserinfo', 'Registercontroller@completeUserInfo')->middleware('checkifregister');
-    Route::post('completeuserinfo/upload', 'Registercontroller@uploadFace')->middleware('checkifregister');
+    Route::get('completeuserinfo', 'RegisterController@completeUserInfo')->middleware('checkifregister');
+    Route::post('completeuserinfo', 'RegisterController@completeUserInfo')->middleware('checkifregister');
+    Route::post('completeuserinfo/upload', 'RegisterController@uploadFace')->middleware('checkifregister');
 
     // 完善鉴定信息
     Route::get('completeidentifyinfolist', 'IdentifyinfoController@IdentifyInfoList')->middleware('checkifregister');
