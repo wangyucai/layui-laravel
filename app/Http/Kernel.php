@@ -19,6 +19,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\TrustProxies::class,
+        
     ];
 
     /**
@@ -60,5 +61,6 @@ class Kernel extends HttpKernel
         'rbac' => \App\Http\Middleware\Rbac::class,
         'checkifregister' => \App\Http\Middleware\CheckIfRegister::class,
         'edituserbutton' => \App\Http\Middleware\EditUserButton::class,
+        'logs' => \App\Http\Middleware\LogsMiddleware::class,
     ];
 }

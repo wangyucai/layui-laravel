@@ -79,7 +79,7 @@ class NoticeService extends BaseService
         $notice->notice_dwdm    = $data['notice_dwdm'];
         $notice->from_dwdm      = $data['from_dwdm'];
         if(isset($data['attachment'])){
-            $identifyinfo->attachment = $data['attachment'];
+            $notice->attachment = $data['attachment'];
         }
         $this->delNotices($notice,$notice_dwdm_arr);
         $this->sendNotices($notice);
@@ -117,6 +117,8 @@ class NoticeService extends BaseService
     public function delNotice(int $noticeId) : bool
     {
         $notice = Notice::find($noticeId);
+        $notice_dwdm_arr = unserialize($notice->notice_dwdm);
+        $this->delNotices($notice,$notice_dwdm_arr);
         if (!$notice) {
             $this->error = '该通知类型不存在';
             $this->httpCode = HttpCode::GONE;
@@ -132,5 +134,53 @@ class NoticeService extends BaseService
         }
         DB::commit();
         return true;
+    }
+
+    /**
+     * 把我的通知标记为已读
+     * @param $data
+     * @return bool
+     */
+    public function readMyNotice(array $data) : bool
+    {
+        // print_r($data);die();
+        // 更新我的通知表里是否已读的状态为已读
+        $re1 = DB::table('user_notice')
+            ->where('user_id', $data['user_id'])
+            ->where('notice_id', $data['notic_id'])
+            ->update(array('if_read' => 1));
+        // 更新用户表该用户未读通知数自动减一
+        $no_notice_count = Auth::guard('admin')->user()->no_notice_count-1;
+        $re2 = DB::table('admins')
+            ->where('id', $data['user_id'])
+            ->update(array('no_notice_count' => $no_notice_count));
+        if ($re1 === false && $re2 === false) {
+            $this->error = '标记失败';
+            $this->httpCode = HttpCode::BAD_REQUEST;
+            DB::rollBack();
+            return false;
+        }
+        return true;
+    }
+    /**
+     * 下载附件记录
+     * @param $data
+     * @return bool
+     */
+    public function downAttachment(array $data) : bool
+    {
+        // 更新我的通知表里是否下载的状态为已下载
+        $re = DB::table('user_notice')
+            ->where('user_id', $data['user_id'])
+            ->where('notice_id', $data['notice_id'])
+            ->update(array('if_down' => 1));
+        $attachment = Notice::where('id',$data['notice_id'])->value('attachment');
+        if ($re === false) {
+            $this->error = '下载失败';
+            $this->httpCode = HttpCode::BAD_REQUEST;
+            DB::rollBack();
+            return false;
+        }
+        return  true;
     }
 }

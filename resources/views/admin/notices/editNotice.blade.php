@@ -34,14 +34,14 @@
 		<div class="layui-form-item">
 			<label class="layui-form-label">通知内容</label>
 			<div class="layui-input-block">
-				<textarea name="content" placeholder="请输入通知内容" class="layui-textarea" lay-verify="required">{{ $notice['content']  }}</textarea>
+				<textarea name="content" placeholder="请输入通知内容" class="layui-textarea" lay-verify="required">{{!! $notice['content'] !!}}</textarea>
 			</div>
 		</div>
 		@if($notice['px_id'])
 		<div class="layui-form-item">
 			<label class="layui-form-label">培训内容</label>
 			<div class="layui-input-block">
-				<textarea name="content2" id="editor" placeholder="请输入培训内容" class="layui-textarea" lay-verify="required">{{ $notice['content2']  }}</textarea>
+				<textarea name="content2" id="editor" placeholder="请输入培训内容" class="layui-textarea" lay-verify="required">{{!! $notice['content2'] !!}</textarea>
 			</div>
 		</div>
 		@endif

@@ -15,10 +15,14 @@
 			<label class="layui-form-label">通知类别</label>
 			<div class="layui-input-block">
 				<select name="type" lay-filter="type" lay-verify="required">
+				@if($px_info)
+					<option value="02">培训预备通知</option>
+				@else
 			        <option value="">请选择通知类别</option>
 			        @foreach($noticetypes as $noticetype)
 			       	<option value="{{ $noticetype['notice_type_code'] }}">{{ $noticetype['notice_type_name']  }}</option>
 			       	@endforeach
+			    @endif
 		      	</select>
 			</div>
 		</div>
@@ -37,6 +41,7 @@
 			</div>
 		</div>
 		@if($px_info)
+		<input type="hidden" name="px_id" value="{{ $px_info->id }}">
 		<div class="layui-form-item">
 			<label class="layui-form-label">培训内容</label>
 			<div class="layui-input-block">

@@ -10,6 +10,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::post('register', 'RegisterController@register');
 
     Route::group(['middleware' => 'auth:admin'], function () {
+        
+        Route::group(['middleware' => 'logs'], function () {
+        
         Route::get('/', 'IndexController@index');
         Route::get('index', 'IndexController@index');
         Route::get('menu', 'IndexController@getMenu');
@@ -185,6 +188,21 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             Route::get('notice/{id}/edit', 'NoticeController@editNotice');
             Route::put('notice', 'NoticeController@editNotice');
             Route::delete('notice', 'NoticeController@delNotice');
+            Route::get('notice/{id}/user','NoticeController@noticeUserList');
+            Route::get('notice/users','NoticeController@getNoticeUser');
+            /*
+             * 内部邮件管理
+            */
+             // 通知列表
+            Route::get('email', 'EmailController@noticeList');
+            Route::get('emails', 'NoticeController@getNotice');
+            Route::get('email/create', 'NoticeController@addNotice');
+            Route::post('email', 'NoticeController@addNotice');
+            Route::post('email/upload', 'NoticeController@uploadAttachment');
+            Route::get('email/{id}/edit', 'NoticeController@editNotice');
+            Route::put('email', 'NoticeController@editNotice');
+            Route::delete('email', 'NoticeController@delNotice');
+        });
         });
     });
     // 完善人事信息
@@ -203,4 +221,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::put('completeidentifyinfo', 'IdentifyinfoController@editIdentifyInfo');
     Route::delete('completeidentifyinfo', 'IdentifyinfoController@delIdentifyInfo');
     Route::get('lookmyidentifyinfo/{id}', 'IdentifyinfoController@lookMyIdentifyInfo');
+    // 我的通知列表
+    Route::get('mynotice', 'NoticeController@myNoticeList')->middleware('checkifregister');
+    Route::get('mynotices', 'NoticeController@getMyNotice');
+    Route::get('mynotices/{mynotice}/show', 'NoticeController@myNoticeShow');
+    Route::post('readmynotice', 'NoticeController@readMyNotice');
+    Route::post('downattachment', 'NoticeController@downAttachment');
 });

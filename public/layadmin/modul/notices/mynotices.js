@@ -5,8 +5,8 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], 
         ,$ = layui.$;
 
     table.render({
-        elem: '#notices'
-        ,url: '/admin/notices' //数据接口
+        elem: '#mynotices'
+        ,url: '/admin/mynotices' //数据接口
         ,method: 'get'
         ,page: true //开启分页
         ,limit: 10
@@ -18,11 +18,10 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], 
         ,cols: [[ //表头
             {field: 'id', title: 'ID', width:80, sort: true, fixed: 'left', align: 'left'}
             ,{field: 'title', title: '通知标题'}
-            ,{field: 'notice_type_name', title: '通知类别'}
-            ,{field: 'from_dw', title: '通知来源'}
-            ,{field: 'notice_yxq', title: '有效期至'}
-            ,{field: 'if_expire', title: '是否过期',width: 100, templet: '#active'}
-            ,{title: '操作', width: 360, toolbar: '#op'}
+            ,{field: 'notice_type_name', title: '通知类型'}
+            ,{field: 'created_at', title: '通知时间'}
+            ,{field: 'if_read', title: '标记已读', toolbar: '#active'}
+            ,{title: '操作', toolbar: '#op'}
         ]]
         ,response: {
             statusName: 'code'
@@ -34,20 +33,18 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], 
         ,even: false //开启隔行背景
     });
 
-    table.on('tool(noticetab)', function(obj){
+    table.on('tool(mynoticetab)', function(obj){
         var data = obj.data;      //获得当前行数据
         var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
         var tr = obj.tr;          //获得当前行 tr 的DOM对象
 
-        if (layEvent == 'edit') {
-            dialog.open('编辑通知', '/admin/notice/'+data.id+'/edit');
-        } else if (layEvent == 'del') {
-            dialog.confirm('确认删除该通知么', function () {
-                var loadIndex = dialog.load('删除中，请稍候');
+        if (layEvent == 'biaoji') {
+            dialog.confirm('确认标记为已读么', function () {
+                var loadIndex = dialog.load('标记已读中，请稍候');
                 his.ajax({
-                    url: '/admin/notice'
-                    ,type: 'delete'
-                    ,data: {id: data.id}
+                    url: '/admin/readmynotice'
+                    ,type: 'post'
+                    ,data: {notic_id: data.id, user_id: data.user_id}
                     ,complete: function () {
                         dialog.close(loadIndex);
                     }
@@ -55,20 +52,19 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], 
                         dialog.error(msg);
                     }
                     ,success: function () {
-                        dialog.msg('删除成功');
+                        dialog.msg('标记成功');
                         obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                     }
                 });
             })
-        } else if (layEvent == 'noticeuser') {
-            dialog.open('查看通知用户列表', '/admin/notice/'+data.id+'/user');
+        }else if (layEvent == 'detail') {
+            dialog.open('查看通知内容', '/admin/mynotices/'+data.id+'/show');
         }
     });
-
-    function flushTable (cond, sortObj) {
+    function flushTable (notice_status,sortObj) {
         var query = {
             where: {
-                cond: cond
+                notice_status: notice_status
             }
             ,page: {
                 curr: 1
@@ -79,23 +75,26 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], 
             query.where.sortField = sortObj.field;   // 排序字段
             query.where.order = sortObj.type;        //排序方式
         }
-        table.reload('notices', query);
+        table.reload('mynotices', query);
     }
-
-    // 搜索
-    $('.search_btn').click(function () {
-        var cond = $('.search_input').val();
-        flushTable(cond);
+    // 全部通知
+    $('.notice_all').click(function () {
+        var notice_status = 2;
+        flushTable(notice_status);
     });
-
+    // 已读通知
+    $('.notice_yes').click(function () {
+        var notice_status = 1;
+        flushTable(notice_status);
+    });
+    // 未读通知
+    $('.notice_no').click(function () {
+        var notice_status = 0;
+        flushTable(notice_status);
+    });
     // 排序
-    table.on('sort(noticetab)', function (obj) {
-        var cond = $('.search_input').val();
-        flushTable(cond, obj);
-    });
-
-    // 添加通知类型
-    $('.add_btn').click(function () {
-        dialog.open('添加通知', '/admin/notice/create');
-    });
+    table.on('sort(mynoticetab)', function (obj) {
+        var notice_status = 2;
+        flushTable(notice_status, obj);
+    });    
 });

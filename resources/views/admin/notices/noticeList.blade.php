@@ -38,6 +38,10 @@
 			<i class="layui-icon"></i>
 			删除
 		</a>
+		<a class="layui-btn layui-bg-orange  layui-btn-xs" lay-event="noticeuser">
+			<i class="layui-icon">&#xe612;</i>
+			通知用户列表
+		</a>
 	</script>
 	<script type="text/javascript" src="/layadmin/modul/notices/notices.js"></script>
 @endsection

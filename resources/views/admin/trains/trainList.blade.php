@@ -108,13 +108,14 @@
 			删除
 		</a>
 	</script>
-	<script type="text/html" id="zspath">
-		<div><img  src="@{{d.jdry_zspath}}"></div>
-	</script>
-	<script type="text/html" id="op">
-	<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">
+	<script type="text/html" id="op1">
+		<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="sednotice">
 			<i class="layui-icon">&#xe623;</i>
-			查看此人证书
+			通知
+		</a>
+		<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="bmuser">
+			<i class="layui-icon">&#xe623;</i>
+			报名人员
 		</a>
 	</script>
 	<script type="text/javascript" src="/layadmin/modul/trains/trains.js"></script>

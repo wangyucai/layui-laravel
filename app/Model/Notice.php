@@ -3,6 +3,9 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
+use Auth;
 
 class Notice extends Model
 {
@@ -39,4 +42,109 @@ class Notice extends Model
            'data' => $notices
        ];
    	}
+    /**
+    * 获取我的通知分页数据
+    * @return array
+    */
+    public function getMyNotice(array $param) : array
+    {
+       $page = $param['page'];
+       $limit = $param['limit'];
+       $sortfield = $param['sortField'] ?? 'id';
+       $order = $param['order'] ?? 'asc';
+       $where = $param['notice_status'] ?? [];
+       $offset = ($page - 1) * $limit;
+       if ($where==1) $where = [['user_notice.if_read',1]];
+       if ($where==0) $where = [['user_notice.if_read',0]];
+       if ($where==2) $where = [];
+       $uid = $user = Auth::guard('admin')->user()->id;
+       $mynotices = $this->where($where)
+                             ->leftJoin('user_notice', 'user_notice.notice_id', '=', 'notices.id')
+                             ->where('user_notice.user_id',$uid)
+                             ->offset($offset)
+                             ->limit($limit)
+                             ->orderBy('notices.created_at', 'desc')
+                             ->select('notices.id','notices.title','notices.type','notices.created_at','user_notice.user_id','user_notice.notice_id','user_notice.if_read')
+                             ->get()
+                             ->toArray();
+        // 获取通知类型的数组
+        $notice_types_arr = Cache::remember('notice_types', 120, function() {
+            return DB::table('notice_types')->select('notice_type_code','notice_type_name')->get()->pluck('notice_type_name', 'notice_type_code')->toArray();
+        });
+        foreach ($mynotices as $k => $v) {
+            $v['notice_type_name'] = $notice_types_arr[$v['type']];
+            $mynotices[$k] = $v;
+        }    
+       $count =  $count = $this->where($where)->leftJoin('user_notice', 'user_notice.notice_id', '=', 'notices.id')->where('user_notice.user_id',$uid)->count();
+       return [
+           'count' => $count,
+           'data' => $mynotices
+       ];
+    }
+    
+  /**
+  * 获取我的通知详情
+  * @return array
+  */
+  public function myNoticeDetail(int $noticeId) : array
+  {
+      $mynotice = $this->leftJoin('user_notice', 'user_notice.notice_id', '=', 'notices.id')
+                       ->select('notices.*','user_notice.user_id','user_notice.notice_id','user_notice.if_down')
+                       ->find($noticeId)
+                       ->toArray();
+      return $mynotice;
+  }
+
+  /**
+    * 获取通知用户的分页数据
+    * @return array
+    */
+    public function getNoticeUser(array $param) : array
+    {
+
+       $page = $param['page'];
+       $limit = $param['limit'];
+       $where = $param['if_read'] ?? [];
+       $where1 = $param['if_down'] ?? [];
+       $sortfield = $param['sortField'] ?? 'id';
+       $order = $param['order'] ?? 'asc';
+       $offset = ($page - 1) * $limit;     
+
+       if ($where or $where==0) $where = [['user_notice.if_read',$where]];
+       if ($where1 or $where1==0) $where1 = [['user_notice.if_down',$where1]];
+       // 获取发送通知的用户
+       $notice_id = $param['notice_id'];
+       $notice_user = Admin::leftJoin('user_notice', 'user_notice.user_id', '=', 'admins.id')
+                             ->where('user_notice.notice_id',$notice_id)
+                             ->where($where)
+                             ->where($where1)
+                             ->offset($offset)
+                             ->limit($limit)
+                            ->orderBy($sortfield, $order)
+                             ->select('admins.id', 'admins.username','admins.real_name', 'admins.tel', 'admins.company_dwdm','admins.mechanism_id','user_notice.notice_id','user_notice.if_read','user_notice.if_down')
+                             ->get()
+                             ->toArray();
+        // 获取所有的单位代码数组
+        $dw_arr = Cache::remember('companies', 120, function() {
+            return DB::table('companies')->select('dwdm','dwqc')->get()->pluck('dwqc', 'dwdm')->toArray();
+        });
+        // 获取所有部门的数组
+        $bm_arr = Cache::remember('mechanisms', 120, function() {
+            return DB::table('mechanisms')->select('id','nsjgmc')->get()->pluck('nsjgmc', 'id')->toArray();
+        });
+        foreach ($notice_user as $k => $v) {
+            $v['dwqc'] = $dw_arr[$v['company_dwdm']];
+            $v['nsjgmc'] = $bm_arr[$v['mechanism_id']];
+            $notice_user[$k] = $v;
+        }
+       $count =  $count = Admin::leftJoin('user_notice', 'user_notice.user_id', '=', 'admins.id')
+                                  ->where('user_notice.notice_id',$notice_id)
+                                  ->where($where)
+                                  ->where($where1)
+                                  ->count();
+       return [
+           'count' => $count,
+           'data' => $notice_user
+       ];
+    }
 }

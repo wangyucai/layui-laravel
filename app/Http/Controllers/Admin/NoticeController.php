@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Handlers\ImageUploadHandler;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use App\Common\Enum\HttpCode;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Notice;
 use App\Model\NoticeType;
 use App\Model\Company;
+use App\Model\Train;
 use App\Service\NoticeService;
 use Auth;
 
@@ -100,7 +103,7 @@ class NoticeController extends Controller
     {
         $uid = $user = Auth::guard('admin')->user()->id;
         if ($request->file) {
-            $result = $uploader->save($request->file, 'noticeAttachment', $uid, 362);
+            $result = $uploader->save($request->file, 'noticeAttachment', $uid);
             if ($result) {
                 return [
                     'status' => 1,
@@ -161,4 +164,73 @@ class NoticeController extends Controller
         if (!$re) return ajaxError($noticeService->getError(), $noticeService->getHttpCode());
         return ajaxSuccess();
     }
+
+    /**
+     * 我的通知列表页
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function myNoticeList()
+    {
+        return view('admin.notices.myNoticeList');
+    }
+    /**
+     * 获取我的通知分页数据
+     * @param Request $request
+     * @param Notice $notice
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMyNotice(Request $request, Notice $notice)
+    {
+        $data = $request->all();
+        $res = $notice->getMyNotice($data);
+        return ajaxSuccess($res['data'], $res['count']);
+    }
+    
+    /*把我的通知标记为已读*/
+    public function readMyNotice(Request $request)
+    {
+        $noticeService = new NoticeService();
+        $re = $noticeService->readMyNotice($request->all());
+        if (!$re) return ajaxError($noticeService->getError(), $noticeService->getHttpCode());
+        return ajaxSuccess();
+    }
+    /**
+     * 查看通知详情
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function myNoticeShow(Notice $notice,$mynotice)
+    {   
+        $mynoticedetail = $notice->myNoticeDetail($mynotice);
+        return view('admin.notices.myNoticeShow',compact('mynoticedetail'));
+    }
+    /*下载附件*/
+    public function downAttachment(Request $request)
+    {
+        $noticeService = new NoticeService();
+        $re = $noticeService->downAttachment($request->all());
+        if (!$re) return ajaxError($noticeService->getError(), $noticeService->getHttpCode());
+        return ajaxSuccess();
+    }
+
+    /**
+     * 通知的用户列表页
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function noticeUserList($id)
+    {
+        return view('admin.notices.noticeUserList',compact('id'));
+    }
+    /**
+     * 获取通知的用户分页数据
+     * @param Request $request
+     * @param Notice $notice
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getNoticeUser(Request $request, Notice $notice)
+    {
+        $data = $request->all();
+        $res = $notice->getNoticeUser($data);
+        return ajaxSuccess($res['data'], $res['count']);
+    }
+
 }

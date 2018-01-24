@@ -43,9 +43,9 @@
             </div>
             <!-- 顶部右侧菜单 -->
             <ul class="layui-nav top_menu">
-                {{--<li class="layui-nav-item showNotice" id="showNotice" pc>--}}
-                    {{--<a href="javascript:;"><i class="layui-icon"></i><cite>系统公告</cite></a>--}}
-                {{--</li>--}}
+                <li class="layui-nav-item showNotice" id="showNotice" pc="">
+                    <a href="javascript:;"><i class="iconfont icon-gonggao"></i><cite>系统公告</cite></a>
+                </li>
                 <li class="layui-nav-item" pc>
                     <a href="javascript:;">
                         @if($user->face)
