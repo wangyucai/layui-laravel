@@ -10,7 +10,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::post('register', 'RegisterController@register');
 
     Route::group(['middleware' => 'auth:admin'], function () {
-        
+
         Route::group(['middleware' => 'logs'], function () {
         
         Route::get('/', 'IndexController@index');
@@ -193,15 +193,19 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             /*
              * 内部邮件管理
             */
-             // 通知列表
+             // 内部邮件列表
             Route::get('email', 'EmailController@noticeList');
-            Route::get('emails', 'NoticeController@getNotice');
-            Route::get('email/create', 'NoticeController@addNotice');
-            Route::post('email', 'NoticeController@addNotice');
-            Route::post('email/upload', 'NoticeController@uploadAttachment');
-            Route::get('email/{id}/edit', 'NoticeController@editNotice');
-            Route::put('email', 'NoticeController@editNotice');
-            Route::delete('email', 'NoticeController@delNotice');
+            Route::get('emails', 'EmailController@getNotice');
+            Route::get('email/create', 'EmailController@addNotice');
+            Route::post('email', 'EmailController@addNotice');
+            Route::post('email/upload', 'EmailController@uploadAttachment');
+            Route::get('email/{id}/edit', 'EmailController@editNotice');
+            Route::put('email', 'EmailController@editNotice');
+            Route::delete('email', 'EmailController@delNotice');
+
+            // 日志管理
+            Route::get('log', 'LogController@logList');
+            Route::get('logs', 'LogController@getLogs');
         });
         });
     });

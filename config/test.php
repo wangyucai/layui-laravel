@@ -39,5 +39,40 @@ return [
     'admin/mymechanismcode.post'  => '添加内设机构',
     'admin/mymechanismcode.put'   => '编辑内设机构',
     'admin/mymechanismcode.del'   => '删除内设机构',
-    // 人员管理系统--
+    // 人员管理系统--完善人事信息
+    'admin/completeuserinfo.post'  		   => '完善人事信息',
+    'admin/completeuserinfo/upload.post'   => '上传头像',
+    // 人员管理系统--完善人事信息用户列表
+    'admin/completeinfouser.put'  		   => '编辑人事信息用户',
+    'admin/completeinfouser.patch'   	   => '审核人事信息用户',
+    'admin/completeinfouser.delete'   	   => '删除人事信息用户',
+    // 人员管理系统--注册用户列表
+    'admin/registeruser.put'  		   	   => '编辑注册用户',
+    'admin/registeruser.patch'   	   	   => '审核注册用户',
+    'admin/registeruser.delete'   	       => '删除注册用户',
+    // 机构管理系统--司法鉴定机构代码列表
+    'admin/institutioncode.post'  		   => '添加司法鉴定机构代码',
+    'admin/institutioncode.put'   		   => '编辑司法鉴定机构代码',
+    'admin/institutioncode.del'   		   => '删除司法鉴定机构代码',
+    // 机构管理系统--司法鉴定业务范围
+    'admin/business.post'  		   => '添加司法鉴定业务范围',
+    'admin/business.put'   		   => '编辑司法鉴定业务范围',
+    'admin/business.del'   		   => '删除司法鉴定业务范围',
+    // 机构管理系统--司法鉴定机构证书
+    'admin/inscertificate.post'  		   => '添加司法鉴定机构证书',
+    'admin/inscertificate.put'   		   => '编辑司法鉴定机构证书',
+    'admin/inscertificate.patch'   		   => '上传司法鉴定机构证书',
+    'admin/inscertificate.del'   		   => '删除司法鉴定机构证书',
+    // 培训模块管理--培训信息列表
+    'admin/trainmodule.post'  		   => '添加培训信息',
+    'admin/trainmodule.put'   		   => '编辑培训信息',
+    'admin/trainmodule.del'   		   => '删除培训信息',
+    // 培训模块管理--信息化技术代码表
+    'admin/infortech.post'  		   => '添加信息化技术代码',
+    'admin/infortech.put'   		   => '编辑信息化技术代码',
+    'admin/infortech.del'   		   => '删除信息化技术代码',
+    // 培训模块管理--培训方向代码表
+    'admin/traindirection.post'  		   => '添加培训方向代码',
+    'admin/traindirection.put'   		   => '编辑培训方向代码',
+    'admin/traindirection.del'   		   => '删除培训方向代码',
 ];
