@@ -30,6 +30,16 @@ class IndexController extends Controller
         return view('admin.403');
     }
 
+    public function noComplete()
+    {
+        return view('admin.noComplete');
+    }
+
+    public function noCheck()
+    {
+        return view('admin.nocheck');
+    }
+
     /**
      * 首页
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View

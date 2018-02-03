@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Foundation\Auth\User;
+use Auth;
 
 class Admin extends User
 {
@@ -160,35 +161,77 @@ class Admin extends User
     {
         $page = $param['page'];
         $limit = $param['limit'];
-        $where = $param['cond'] ?? [];
+        $where = $param['sex'] ?? [];
+        $where1 = $param['nation'] ?? [];
+        $where2 = $param['political_outlook'] ?? [];
+        $where3 = $param['join_work_time'] ?? [];
+        $where4 = $param['join_procuratorate_time'] ?? [];
+        $where5 = $param['if_work'] ?? [];
+        $where6 = $param['education'] ?? [];
+        $where7 = $param['academic_degree'] ?? [];
+        $where8 = $param['procurator'] ?? [];
+        $where9 = $param['administrative_level'] ?? [];
+        $wherea = $param['technician_title'] ?? [];
+        $whereb = $param['start_time'] ?? [];
+        $wherec = $param['end_time'] ?? [];
+        $whered = $param['danwei'] ?? [];
+        $wheree = $param['my_dwjb'] ?? [];
+        $wheref = $param['like_search'] ?? [];
         $sortfield = $param['sortField'] ?? 'id';
         $order = $param['order'] ?? 'asc';
-        if ($where) $where = [['username', 'like', $where.'%']];
+        if ($where)  $where   = [['admins.sex', $where]];
+        if ($where1) $where1  = [['admins.nation', $where1]];
+        if ($where2) $where2  = [['admins.political_outlook', $where2]];
+        if ($where3) $where3  = [['admins.join_work_time', '>=', strtotime($where3)]];
+        if ($where4) $where4  = [['admins.join_procuratorate_time', '>=', strtotime($where4)]];
+        if ($where5) $where5  = [['admins.if_work', $where5]];
+        if ($where6) $where6  = [['admins.education', $where6]];
+        if ($where7) $where7  = [['admins.academic_degree', $where7]];
+        if ($where8) $where8  = [['admins.procurator', $where8]];
+        if ($where9) $where9  = [['admins.administrative_level', $where9]];
+        if ($wherea) $wherea  = [['admins.technician_title', $wherea]];
+        if ($whereb) $whereb  = [['admins.join_technical_department_time','>=', strtotime($whereb)]];
+        if ($wherec) $wherec  = [['admins.join_technical_department_time','<=', strtotime($wherec)]];
+        if ($whered) $whered  = [['admins.company_dwdm', $whered]];
+        if ($wheref) $wheref  = [['admins.major_school', 'like', '%'.$wheref.'%']];
+        // 获取本单位完善人员信息用户列表
+        $my_dwdm = $user = Auth::guard('admin')->user()->company_dwdm;
+        // 判断是否包含下辖单位查询(分别是本单位级别为省级和市级的情况)
+        if ($wheree==2 && $param['danwei']!=520000) $wheree = $children_dwdm = Company::where('sjdm',$param['danwei'])->orwhere('dwdm',$param['danwei'])->pluck('dwdm')->toArray();
+        if ($wheree==2 && $param['danwei']==520000) $wheree = $children_dwdm = Company::pluck('dwdm')->toArray();
+        if ($wheree == 3) $wheree = $children_dwdm = Company::where('sjdm',$my_dwdm)->orwhere('dwdm',$my_dwdm)->pluck('dwdm')->toArray();
         $offset = ($page - 1) * $limit;
-        $where1 =  $param['company_dwdm']!=100000 ? $param['company_dwdm'] : [];      
-        $where2 =  $param['dwjb']==3 ? $param['next_companies_dwdm'] : [];
-        if ($where1) $where1 = [['admins.company_dwdm', $where1]];
-        $admins = $this->where('real_name','!=',null)
-                           ->where($where1)
-                           ->where(function ($where2) {
-                                $where2 ?: $where->orwhereIn('admins.company_dwdm', '=', $where2);
-                            })
-                           ->where($where)
-                           ->leftJoin('mechanisms', 'mechanisms.id', '=', 'admins.mechanism_id')
-                           ->leftJoin('companies', 'mechanisms.company_dwdm', '=', 'companies.dwdm')
-                           ->select('admins.id', 'admins.real_name', 'admins.tel',  'admins.perinfor_if_check','mechanisms.nsjgmc','companies.dwqc')
-                           ->offset($offset)->limit($limit)->orderBy($sortfield, $order)
-                           ->get()
-                           ->toArray();
-        $count = $this->where('real_name','!=',null)
-                           ->where($where1)
-                           ->where(function ($where2) {
-                                $where2 ?: $where->orwhereIn('admins.company_dwdm', '=', $where2);
-                            })
-                           ->where($where)
-                           ->leftJoin('mechanisms', 'mechanisms.id', '=', 'admins.mechanism_id')
-                           ->leftJoin('companies', 'mechanisms.company_dwdm', '=', 'companies.dwdm')
-                           ->count();
+        $query = $this->where('real_name','!=',null)
+                      ->leftJoin('mechanisms', 'mechanisms.id', '=', 'admins.mechanism_id')
+                      ->leftJoin('companies', 'mechanisms.company_dwdm', '=', 'companies.dwdm');
+        $query->where($where);
+        $query->where($where1);
+        $query->where($where2);
+        $query->where($where3);
+        $query->where($where4);
+        $query->where($where5);
+        $query->where($where6);
+        $query->where($where7);
+        $query->where($where8);
+        $query->where($where9);
+        $query->where($wherea);
+        $query->where($whereb);
+        $query->where($wherec);
+        $query->where($wheref);
+        // 选择单位和子单位同时存在
+        ($whered && $wheree) && $query->where(function ($query) use ($whered,$wheree) {
+            $query->whereIn('admins.company_dwdm',$wheree)->orwhere($whered);
+        });
+        (!$whered && !$wheree && $my_dwdm!=100000) && $query->where('admins.company_dwdm','=', $my_dwdm);
+        ($whered && !$wheree) && $query->where($whered);
+        (!$whered && $wheree) && $query->whereIn('admins.company_dwdm',$wheree);
+        $count = $query->select('admins.id', 'admins.real_name', 'admins.tel',  'admins.perinfor_if_check','mechanisms.nsjgmc','companies.dwqc');
+        $admins = $count->offset($offset)
+                        ->limit($limit)
+                        ->orderBy($sortfield, $order)
+                        ->get()
+                        ->toArray();
+        $count = $count->count();
         return [
             'count' => $count,
             'data' => $admins
@@ -285,6 +328,16 @@ class Admin extends User
     {
         return $this->belongsToMany(\App\Model\Notice::class,'user_notice','user_id','notice_id')->withPivot(['user_id','notice_id','if_read','if_down']);
     }
+    // 用户收到的邮件
+    public function emails()
+    {
+        return $this->belongsToMany(\App\Model\Email::class,'user_email','user_id','email_id')->withPivot(['user_id','email_id','if_read','if_down']);
+    }
+    // 用户收到的培训
+    public function trains()
+    {
+        return $this->belongsToMany(\App\Model\Train::class,'user_train','user_id','train_id')->withPivot(['user_id','train_id']);
+    }
 
     // 给用户增加通知
     public function addNotice($notice)
@@ -294,7 +347,27 @@ class Admin extends User
     // 删除用户通知
     public function deleteNotice($notice)
     {
-      return $this->notices()->detach($notice);//删除通知：detach
+      return $this->notices()->detach($notice);
+    }
+    // 给用户发送邮件
+    public function addEmail($email)
+    {
+        return $this->emails()->save($email);
+    }
+    // 删除用户邮件
+    public function deleteEmail($email)
+    {
+      return $this->emails()->detach($email);
+    }
+    // 给用户发送培训
+    public function addTrain($train)
+    {
+        return $this->trains()->save($train);
+    }
+    // 删除用户培训
+    public function deleteTrain($train)
+    {
+      return $this->trains()->detach($train);
     }
 
 }

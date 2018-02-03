@@ -9,8 +9,11 @@
         "fideloper/proxy": "~3.3",
         "gregwar/captcha": "1.*",
         "intervention/image": "^2.4",
+        "jenssegers/agent": "^2.6",
         "laravel/framework": "5.5.*",
-        "laravel/tinker": "~1.0"
+        "laravel/tinker": "~1.0",
+        "overtrue/laravel-filesystem-qiniu": "^1.0",
+        "zhuzhichao/ip-location-zh": "^2.4"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "~3.1",

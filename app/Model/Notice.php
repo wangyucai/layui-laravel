@@ -86,11 +86,12 @@ class Notice extends Model
   * 获取我的通知详情
   * @return array
   */
-  public function myNoticeDetail(int $noticeId) : array
+  public function myNoticeDetail(array $param) : array
   {
       $mynotice = $this->leftJoin('user_notice', 'user_notice.notice_id', '=', 'notices.id')
-                       ->select('notices.*','user_notice.user_id','user_notice.notice_id','user_notice.if_down')
-                       ->find($noticeId)
+                       ->where('user_notice.user_id',$param['user_id'])
+                       ->select('notices.*','user_notice.user_id','user_notice.notice_id','user_notice.if_down','user_notice.if_enter')
+                       ->find($param['mynotice'])
                        ->toArray();
       return $mynotice;
   }
@@ -145,6 +146,44 @@ class Notice extends Model
        return [
            'count' => $count,
            'data' => $notice_user
+       ];
+    }
+
+    /**
+    * 获取提示信息列表页
+    * @return array
+    */
+    public function getMyMessage(array $param) : array
+    {
+       $page = $param['page'];
+       $limit = $param['limit'];
+       $sortfield = $param['sortField'] ?? 'id';
+       $order = $param['order'] ?? 'asc';
+       $where = $param['notice_status'] ?? [];
+       $offset = ($page - 1) * $limit;
+       if ($where==1) $where = [['prompt_messages.if_read',1]];
+       if ($where==0) $where = [['prompt_messages.if_read',0]];
+       if ($where==2) $where = [];
+       $uid = $user = Auth::guard('admin')->user()->id;
+       $myMessages = DB::table('prompt_messages')
+                             ->where('receiver_id',$uid)
+                             ->where($where)
+                             ->offset($offset)
+                             ->limit($limit)
+                             ->orderBy('created_at', 'desc')
+                             ->get()
+                             ->toArray();
+        $message_type = message_type();
+        $myMessages = array_map('get_object_vars', $myMessages);//把二维对象也全部转为数组
+        foreach ($myMessages as $k => $v) {
+            $v['msg_type'] = $message_type[$v['msg_type']];
+
+            $myMessages[$k] = $v;
+        }    
+       $count =  $count = DB::table('prompt_messages')->where('receiver_id',$uid)->where($where)->count();
+       return [
+           'count' => $count,
+           'data' => $myMessages
        ];
     }
 }

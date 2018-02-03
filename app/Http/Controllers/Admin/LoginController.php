@@ -9,6 +9,9 @@ use Gregwar\Captcha\CaptchaBuilder;
 use Gregwar\Captcha\PhraseBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Events\LoginEvent; 
+use Jenssegers\Agent\Agent; 
+use Carbon\Carbon;
 
 class LoginController extends Controller
 {
@@ -30,6 +33,8 @@ class LoginController extends Controller
         $service = new AdminService();
         $re = $service->login($request->username, $request->password, (bool)$request->remember);
         if ($re) {
+            //登录成功，触发事件
+            event(new LoginEvent(Auth::guard('admin')->user(), new Agent(), \Request::getClientIp(), Carbon::now()));
             return ajaxSuccess();
         } else {
             return ajaxError($service->getError(), $service->getHttpCode());

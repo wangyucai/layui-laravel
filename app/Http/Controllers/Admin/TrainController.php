@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Model\Train;
 use App\Model\Company;
+use App\Model\Notice;
 use App\Service\TrainService;
 use Auth;
 
@@ -144,5 +145,81 @@ class TrainController extends Controller
         $re = $trainService->delTrain($request->id);
         if (!$re) return ajaxError($trainService->getError(), $trainService->getHttpCode());
         return ajaxSuccess();
+    }
+    /**
+     * 查看报名用户列表页
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function bmUserList($trainID)
+    {
+        $my_dwjb = Auth::guard('admin')->user()->dwjb;
+        $my_dwdm = Auth::guard('admin')->user()->company_dwdm;
+        // 获取该培训的通知
+        $notice_id = Notice::where('px_id',$trainID)->value('id');
+        // 获取培训的发起者单位代码及级别
+        $send_px_dwdm = Train::where('id',$trainID)->value('px_dwdm');
+        $send_px_dwjb = Company::where('dwdm',$send_px_dwdm)->value('dwjb');
+        if($send_px_dwjb==1) $send_px_dwjb =2;// 默认超级管理员单位级别为2
+        return view('admin.trains.bmUserList',compact('notice_id','my_dwjb','my_dwdm','send_px_dwdm','send_px_dwjb'));
+    }
+    /**
+     * 获取培训信息分页数据
+     * @param Request $request
+     * @param Train $train
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getBmUser(Request $request, Train $train)
+    {
+        $data = $request->all();
+        $res = $train->getBmUser($data);
+        return ajaxSuccess($res['data'], $res['count']);
+    }
+    
+    /**
+     * 上报已选用户信息
+     * @param Request $request
+     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function selectBmUser(Request $request)
+    {
+        $trainService = new TrainService();
+        $re = $trainService->selectBmUser($request->all());
+        if (!$re) return ajaxError($trainService->getError(), $trainService->getHttpCode());
+        return ajaxSuccess();
+    }
+    /**
+     * 反馈信息给已选用户的信息
+     * @param Request $request
+     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function MessageFeedback(Request $request)
+    {      
+        $data = $request->all();
+        $trainService = new TrainService();
+        $re = $trainService->MessageFeedback($data);
+        if (!$re) return ajaxError($trainService->getError(), $trainService->getHttpCode());
+        return ajaxSuccess();
+    }
+
+    /**
+     * 我的培训班列表页
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function myTrainList()
+    {
+        $my_id = Auth::guard('admin')->user()->id;
+        return view('admin.trains.myTrainList', compact('my_id'));
+    }
+    /**
+     * 获取我的培训班分页数据
+     * @param Request $request
+     * @param Train $train
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMyTrain(Request $request, Train $train)
+    {
+        $data = $request->all();
+        $res = $train->getMyTrain($data);
+        return ajaxSuccess($res['data'], $res['count']);
     }
 }

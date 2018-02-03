@@ -200,8 +200,12 @@ class NoticeController extends Controller
      */
     public function myNoticeShow(Notice $notice,$mynotice)
     {   
-        $mynoticedetail = $notice->myNoticeDetail($mynotice);
-        return view('admin.notices.myNoticeShow',compact('mynoticedetail'));
+        $enter_dwdm = Auth::guard('admin')->user()->company_dwdm;
+        $user_id = Auth::guard('admin')->user()->id;
+        $param['user_id'] = $user_id;
+        $param['mynotice'] = $mynotice;
+        $mynoticedetail = $notice->myNoticeDetail($param);
+        return view('admin.notices.myNoticeShow',compact('mynoticedetail','enter_dwdm'));
     }
     /*下载附件*/
     public function downAttachment(Request $request)
@@ -232,5 +236,44 @@ class NoticeController extends Controller
         $res = $notice->getNoticeUser($data);
         return ajaxSuccess($res['data'], $res['count']);
     }
+    /**
+     * 报名培训
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function trainEnter(Request $request)
+    {
+        $noticeService = new NoticeService();
+        $re = $noticeService->trainEnter($request->all());
+        if (!$re) return ajaxError($noticeService->getError(), $noticeService->getHttpCode());
+        return ajaxSuccess();
+    }
 
+    /**
+     * 我的提示信息列表页
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function myMessageList()
+    {
+        return view('admin.notices.myMessageList');
+    }
+    /**
+     * 获取我的提示信息分页数据
+     * @param Request $request
+     * @param Notice $notice
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMyMessage(Request $request, Notice $notice)
+    {
+        $data = $request->all();
+        $res = $notice->getMyMessage($data);
+        return ajaxSuccess($res['data'], $res['count']);
+    }
+    /*把我的提示消息标记为已读*/
+    public function readMyMessage(Request $request)
+    {
+        $noticeService = new NoticeService();
+        $re = $noticeService->readMyMessage($request->all());
+        if (!$re) return ajaxError($noticeService->getError(), $noticeService->getHttpCode());
+        return ajaxSuccess();
+    }
 }

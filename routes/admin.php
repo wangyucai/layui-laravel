@@ -18,6 +18,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         Route::get('menu', 'IndexController@getMenu');
         Route::get('forbidden', 'IndexController@forbidden');
         Route::get('main', 'IndexController@main');
+        Route::get('nocomplete', 'IndexController@noComplete');
+        Route::get('nocheck', 'IndexController@noCheck');
         /*
          * 权限管理模块
         */
@@ -97,6 +99,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             Route::put('completeinfouser', 'RegisterController@editCompleteInfoUser');
             Route::patch('completeinfouser', 'RegisterController@activeCompleteInfoUser');
             // Route::delete('completeinfouser', 'RegisterController@delAdmin');
+            // 信息化信息统计查询
+            Route::get('allinformatization', 'InformatizationController@allInformatizationList');
+            Route::get('allinformatizations', 'InformatizationController@getAllInformatizations');
             /*
              * 机构管理系统
             */
@@ -151,6 +156,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             Route::get('trainmodule/{id}/edit', 'TrainController@editTrain');
             Route::put('trainmodule', 'TrainController@editTrain');
             Route::delete('trainmodule', 'TrainController@delTrain');  
+            Route::get('trainmodule/{id}/bmuser', 'TrainController@bmUserList');
+            Route::get('trainmodule/bmusers', 'TrainController@getBmUser');
+            Route::post('trainmodule/bmusers', 'TrainController@selectBmUser');
+            Route::post('trainmodule/feedback', 'TrainController@MessageFeedback');
             // 信息化技术代码表
             Route::get('infortech', 'InforTechnologyController@infortechList');
             Route::get('infortechs', 'InforTechnologyController@getInfortech');
@@ -167,7 +176,6 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             Route::get('traindirection/{id}/edit', 'TrainDirectionController@editTrainDirection');
             Route::put('traindirection', 'TrainDirectionController@editTrainDirection');
             Route::delete('traindirection', 'TrainDirectionController@delTrainDirection');
-
             /*
              * 通知管理
             */
@@ -193,42 +201,90 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             /*
              * 内部邮件管理
             */
-             // 内部邮件列表
-            Route::get('email', 'EmailController@noticeList');
-            Route::get('emails', 'EmailController@getNotice');
-            Route::get('email/create', 'EmailController@addNotice');
-            Route::post('email', 'EmailController@addNotice');
+            // 内部邮件列表
+            Route::get('email', 'EmailController@emailList');
+            Route::get('emails', 'EmailController@getEmail');
+            Route::get('email/create', 'EmailController@addEmail');
+            Route::post('email', 'EmailController@addEmail');
+            Route::post('emailer', 'EmailController@getEmailer');
             Route::post('email/upload', 'EmailController@uploadAttachment');
-            Route::get('email/{id}/edit', 'EmailController@editNotice');
-            Route::put('email', 'EmailController@editNotice');
-            Route::delete('email', 'EmailController@delNotice');
+            Route::get('email/{id}/edit', 'EmailController@editEmail');
+            Route::put('email', 'EmailController@editEmail');
+            Route::delete('email', 'EmailController@delEmail');
 
             // 日志管理
             Route::get('log', 'LogController@logList');
             Route::get('logs', 'LogController@getLogs');
+            /*
+             * 职业资格证书办理模块
+            */
+            // 职业资格证书代码表
+            Route::get('professioncarcode', 'ProfessionCarCodeController@carCodeList');
+            Route::get('professioncarcodes', 'ProfessionCarCodeController@getCarCode');
+            Route::get('professioncarcode/create', 'ProfessionCarCodeController@addCarCode');
+            Route::post('professioncarcode', 'ProfessionCarCodeController@addCarCode');
+            Route::get('professioncarcode/{id}/edit', 'ProfessionCarCodeController@editCarCode');
+            Route::put('professioncarcode', 'ProfessionCarCodeController@editCarCode');
+            Route::delete('professioncarcode', 'ProfessionCarCodeController@delCarCode');
+            // 职业资格证书模板
+            Route::get('professioncarmodule', 'ProfessionCarModuleController@carModuleList');
+            Route::get('professioncarmodules', 'ProfessionCarModuleController@getCarModule');
+            Route::get('professioncarmodule/create', 'ProfessionCarModuleController@addCarModule');
+            Route::post('professioncarmodule', 'ProfessionCarModuleController@addCarModule');
+            Route::get('professioncarmodule/{id}/edit', 'ProfessionCarModuleController@editCarModule');
+            Route::put('professioncarmodule', 'ProfessionCarModuleController@editCarModule');
+            Route::delete('professioncarmodule', 'ProfessionCarModuleController@delCarModule');
         });
         });
     });
-    // 完善人事信息
-    Route::get('completeuserinfo', 'RegisterController@completeUserInfo')->middleware('checkifregister');
-    Route::post('completeuserinfo', 'RegisterController@completeUserInfo')->middleware('checkifregister');
-    Route::post('completeuserinfo/upload', 'RegisterController@uploadFace')->middleware('checkifregister');
+    
+        // 完善人事信息
+        Route::get('completeuserinfo', 'RegisterController@completeUserInfo')->middleware('checkifregister');
+        Route::post('completeuserinfo', 'RegisterController@completeUserInfo')->middleware('checkifregister');
+        Route::post('completeuserinfo/upload', 'RegisterController@uploadFace')->middleware('checkifregister');
 
-    // 完善鉴定信息
-    Route::get('completeidentifyinfolist', 'IdentifyinfoController@IdentifyInfoList')->middleware('checkifregister');
-    Route::get('completeidentifyinfos', 'IdentifyinfoController@getIdentifyInfos');
-    Route::get('completeidentifyinfo', 'IdentifyinfoController@completeIdentifyInfo');
-    Route::post('completeidentifyinfo', 'IdentifyinfoController@completeIdentifyInfo');
-    Route::post('myidentifynum', 'IdentifyinfoController@myIdentifyNum');
-    Route::post('completeidentifyinfo/upload', 'IdentifyinfoController@uploadMyzs');
-    Route::get('completeidentifyinfo/{id}/edit', 'IdentifyinfoController@editIdentifyInfo');
-    Route::put('completeidentifyinfo', 'IdentifyinfoController@editIdentifyInfo');
-    Route::delete('completeidentifyinfo', 'IdentifyinfoController@delIdentifyInfo');
-    Route::get('lookmyidentifyinfo/{id}', 'IdentifyinfoController@lookMyIdentifyInfo');
-    // 我的通知列表
-    Route::get('mynotice', 'NoticeController@myNoticeList')->middleware('checkifregister');
-    Route::get('mynotices', 'NoticeController@getMyNotice');
-    Route::get('mynotices/{mynotice}/show', 'NoticeController@myNoticeShow');
-    Route::post('readmynotice', 'NoticeController@readMyNotice');
-    Route::post('downattachment', 'NoticeController@downAttachment');
+    // 进行下面操作前需要先完善人事信息 
+    Route::group(['middleware' => 'ifcompleteinfo'], function () {
+        // 完善信息化资格证书信息
+        Route::get('informatization', 'InformatizationController@informatizationList')->middleware('checkifregister');
+        Route::get('informatizations', 'InformatizationController@getinformatization');
+        Route::get('informatization/create', 'InformatizationController@addInformatization');
+        Route::post('informatization', 'InformatizationController@addInformatization');
+        Route::post('myinforcarnum', 'InformatizationController@myInforCarNum');
+        Route::post('informatization/upload', 'InformatizationController@uploadMyInforCar');
+        Route::get('informatization/{id}/edit', 'InformatizationController@editInformatization');
+        Route::put('informatization', 'InformatizationController@editInformatization');
+        Route::delete('informatization', 'InformatizationController@delInformatization');
+        Route::get('lookmyinformatization/{id}', 'InformatizationController@lookMyInformatization');
+        // 完善鉴定信息
+        Route::get('completeidentifyinfolist', 'IdentifyinfoController@IdentifyInfoList')->middleware('checkifregister');
+        Route::get('completeidentifyinfos', 'IdentifyinfoController@getIdentifyInfos');
+        Route::get('completeidentifyinfo', 'IdentifyinfoController@completeIdentifyInfo');
+        Route::post('completeidentifyinfo', 'IdentifyinfoController@completeIdentifyInfo');
+        Route::post('myidentifynum', 'IdentifyinfoController@myIdentifyNum');
+        Route::post('completeidentifyinfo/upload', 'IdentifyinfoController@uploadMyzs');
+        Route::get('completeidentifyinfo/{id}/edit', 'IdentifyinfoController@editIdentifyInfo');
+        Route::put('completeidentifyinfo', 'IdentifyinfoController@editIdentifyInfo');
+        Route::delete('completeidentifyinfo', 'IdentifyinfoController@delIdentifyInfo');
+        Route::get('lookmyidentifyinfo/{id}', 'IdentifyinfoController@lookMyIdentifyInfo');
+        // 我的通知列表
+        Route::get('mynotice', 'NoticeController@myNoticeList')->middleware('checkifregister');
+        Route::get('mynotices', 'NoticeController@getMyNotice');
+        Route::get('mynotices/{mynotice}/show', 'NoticeController@myNoticeShow');
+        Route::post('readmynotice', 'NoticeController@readMyNotice');
+        Route::post('downattachment', 'NoticeController@downAttachment');
+        Route::post('trainnotice/enter', 'NoticeController@trainEnter');
+        // 我的邮件列表
+        Route::get('myemail', 'EmailController@myEmailList')->middleware('checkifregister');
+        Route::get('myemails', 'EmailController@getMyEmail');
+        Route::get('myemails/{myemail}/show', 'EmailController@myEmailShow');
+        Route::post('readmyemail', 'EmailController@readMyEmail');
+        // 我的培训班列表
+        Route::get('mytrainmodule', 'TrainController@myTrainList')->middleware('checkifregister');
+        Route::get('mytrainmodules', 'TrainController@getMyTrain');
+        // 我的提示信息
+        Route::get('mymessage', 'NoticeController@myMessageList')->middleware('checkifregister');
+        Route::get('mymessages', 'NoticeController@getMyMessage');
+        Route::post('readmymessage', 'NoticeController@readMyMessage');
+    });
 });

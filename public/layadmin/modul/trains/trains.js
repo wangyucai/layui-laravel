@@ -37,7 +37,7 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], 
             ,{field: 'px_fx', title: '培训方向'}
             ,{field: 'px_renshu', title: '培训人数'}
             ,{title: '操作', width: 160, toolbar: '#op'}
-            ,{title: '操作2', width: 180, toolbar: '#op1'}
+            ,{field: 'px_dwdm',title: '操作2', width: 180, toolbar: '#op1'}
         ]]
         ,response: {
             statusName: 'code'
@@ -77,9 +77,13 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], 
                 });
             })
         } else if (layEvent == 'sednotice') {
+            if(data.if_notice==1){
+                dialog.msg('该培训已发送过通知，请勿重复操作！');
+                return;
+            }
             dialog.open('发送培训通知', '/admin/notice/create?px_id='+data.id);
         } else if (layEvent == 'bmuser') {
-            dialog.open('查看报名用户信息', '/admin/trainmodule/'+data.id+'/edit');
+            dialog.open('查看报名用户信息', '/admin/trainmodule/'+data.id+'/bmuser');
         }
     });
 

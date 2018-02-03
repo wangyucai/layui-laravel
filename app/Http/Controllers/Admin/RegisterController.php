@@ -14,6 +14,8 @@ use App\Model\Nation;
 use App\Service\AdminService;
 use Auth;
 use App\Handlers\ImageUploadHandler;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class RegisterController extends Controller
 {
@@ -215,7 +217,40 @@ class RegisterController extends Controller
      */
     public function completeInfoUserList()
     {
-        return view('admin.register.completeInfoUser');
+        // 民族 ---永久性缓存
+        $nation_arr = Cache::rememberForever('nations', function() {
+            return DB::table('nations')->select('nation_bh','nation_name')->get()->pluck('nation_name', 'nation_bh')->toArray();
+        });
+        // 政治面貌
+        $political_outlook = political_outlook();
+        // 学历
+        $education = education();
+        // 学位
+        $academic_degree = academic_degree();
+        // 检察官员额
+        $procurator = procurator();
+        // 行政级别
+        $administrative_level = administrative_level();
+        // 专业技师职称
+        $technician_title = technician_title();
+        // 获取我的用户单位级别
+        $my_dwjb = Auth::guard('admin')->user()->dwjb;
+        $my_dwdm = Auth::guard('admin')->user()->company_dwdm;
+        // 单位
+        if($my_dwjb==2){
+            $companies = Company::where('dwdm','!=','100000')->get();
+            $danwei = select_company('sjdm', 'dwdm', $companies, '100000', '=', '1');
+        }elseif($my_dwjb==3){
+            $companies = Company::where('dwdm',$my_dwdm)->orwhere('sjdm',$my_dwdm)->get();
+            $danwei = select_company('sjdm', 'dwdm', $companies, '520000', '=', '1');
+        }else{
+            $danwei = Company::where('dwdm',$my_dwdm)->get();
+            // $danwei = select_company('sjdm', 'dwdm', $companies, '520000', '=', '1');
+        }
+        
+        
+        // print_r($danwei);die();
+        return view('admin.register.completeInfoUser', compact('nation_arr','political_outlook','education','academic_degree','procurator','administrative_level','technician_title','danwei','my_dwjb'));
     }
     /**
      * 获取后台完善信息用户分页数据

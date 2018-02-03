@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MechanismCode extends Model
 {
-    protected $guarded = [];
+  protected $guarded = [];
   /**
     * 获取内设机构代码分页数据
     * @return array

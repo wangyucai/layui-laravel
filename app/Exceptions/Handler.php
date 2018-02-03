@@ -59,6 +59,14 @@ class Handler extends ExceptionHandler
             if ($request->expectsJson()) return ajaxError('您没有权限', HttpCode::FORBIDDEN);
             return redirect('/admin/forbidden');
         }
+        if ($exception instanceof IfCompleteException) {
+            if ($request->expectsJson()) return ajaxError('您没有完善人事信息', HttpCode::UNAUTHORIZED);
+            return redirect('/admin/nocomplete');
+        }
+        if ($exception instanceof IfCheckUserInfoException) {
+            if ($request->expectsJson()) return ajaxError('您的人事信息还未审核', HttpCode::UNAUTHORIZED);
+            return redirect('/admin/nocheck');
+        }
         return parent::render($request, $exception);
     }
 }

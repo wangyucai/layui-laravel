@@ -109,10 +109,12 @@
 		</a>
 	</script>
 	<script type="text/html" id="op1">
+		{{-- @{{# if(d.px_dwdm == my_dwdm){ }} --}}
 		<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="sednotice">
 			<i class="layui-icon">&#xe623;</i>
 			通知
 		</a>
+		{{-- @{{# } }} --}}
 		<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="bmuser">
 			<i class="layui-icon">&#xe623;</i>
 			报名人员

@@ -103,3 +103,10 @@ function technician_title(){
     return $technician_title;
 }
 
+// 提示消息类型
+function message_type(){
+    $message_type = [
+        '1' => '培训信息反馈',
+    ];
+    return $message_type;
+}

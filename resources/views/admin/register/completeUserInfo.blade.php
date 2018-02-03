@@ -1,6 +1,12 @@
 @extends("admin.layout.main")
 
 @section("content")
+	<blockquote class="layui-elem-quote news_search">
+		<div class="layui-inline" style="color: red;">
+		    <span style="font-size: 16px;font-weight: bold;">注意事项：</span>
+		    <span style="font-size: 15px;">上传头像照片时,请将照片扫描或拍摄为.jpg 格式，颜色模式 为 真 彩 色 （ True Color,RGB ）， 分 辨 率 为 150dpi-300dpi6 / 34(Resolution ：pixels/inch),jpg 图像文件格式的存储压缩比≥75%(quality 75% optimized).</span>
+		</div>
+	</blockquote>
 	<form class="layui-form layui-form-pane" >
 	<input type="hidden" name="_token" class="tag_token" value="<?php echo csrf_token(); ?>">
 	<input type="hidden" name="dwjb" value="{{ $dwjb }}">
@@ -33,7 +39,7 @@
 				<select name="nation" class="nation" lay-filter="nation">
 			        <option value="">请选择民族</option>
 			        @foreach($nations as $nation)
-			        <option value="{{ $nation->id }}">{{ $nation->nation_name }}</option>
+			        <option value="{{ $nation->nation_bh }}">{{ $nation->nation_name }}</option>
 			        @endforeach  
 			    </select>
 			</div>

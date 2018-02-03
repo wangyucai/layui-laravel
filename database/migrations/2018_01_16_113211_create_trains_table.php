@@ -27,6 +27,7 @@ class CreateTrainsTable extends Migration
             $table->string('px_fx',50)->comment('培训方向');
             $table->char('px_renshu',10)->comment('培训人数');
             $table->text('px_notice_dw')->nullable()->comment('培训通知单位');
+            $table->tinyInteger('if_notice')->default(0)->comment('该培训是否发送过通知');     
             $table->timestamps();
         });
     }

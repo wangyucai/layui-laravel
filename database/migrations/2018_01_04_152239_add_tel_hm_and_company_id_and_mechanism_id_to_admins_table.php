@@ -46,6 +46,7 @@ class AddTelHmAndCompanyIdAndMechanismIdToAdminsTable extends Migration
             $table->integer('register_if_check')->unsigned()->default(0)->comment('注册信息是否审核');
             $table->integer('perinfor_if_check')->unsigned()->default(0)->comment('完善信息是否审核');
             $table->tinyInteger('no_notice_count')->default(0)->comment('未读通知数量');
+            $table->tinyInteger('no_email_count')->default(0)->comment('未读邮件数量');
         });
     }
 
@@ -89,6 +90,7 @@ class AddTelHmAndCompanyIdAndMechanismIdToAdminsTable extends Migration
             $table->dropColumn('register_if_check');
             $table->dropColumn('perinfor_if_check');
             $table->dropColumn('no_notice_count');
+            $table->dropColumn('no_email_count');
         });
     }
 }
