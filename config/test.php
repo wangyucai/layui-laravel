@@ -75,4 +75,6 @@ return [
     'admin/traindirection.post'  		   => '添加培训方向代码',
     'admin/traindirection.put'   		   => '编辑培训方向代码',
     'admin/traindirection.del'   		   => '删除培训方向代码',
+    // 
+    
 ];

@@ -48,5 +48,9 @@ class VerifyCsrfToken extends Middleware
         ,'/admin/myinforcarnum'
         ,'/admin/informatization/upload'
         ,'/admin/professioncarmodule'
+        ,'/admin/certificatebid'
+        ,'/admin/managecertificate'
+        ,'/admin/managecertificate/reporting'
+        ,'/admin/managecertificate/check'
     ];
 }

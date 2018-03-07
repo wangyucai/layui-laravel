@@ -27,7 +27,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             Route::get('user/password/edit', 'IndexController@editPassword');
             Route::put('user/password', 'IndexController@editPassword');
             // 管理员管理
-            Route::get('usersList', 'RuleController@adminsPage');
+            Route::get('userslist', 'RuleController@adminsPage');
             Route::get('users', 'RuleController@getAdmins');
             Route::get('user/create', 'RuleController@addAdmin');
             Route::post('user', 'RuleController@addAdmin');
@@ -234,6 +234,14 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             Route::get('professioncarmodule/{id}/edit', 'ProfessionCarModuleController@editCarModule');
             Route::put('professioncarmodule', 'ProfessionCarModuleController@editCarModule');
             Route::delete('professioncarmodule', 'ProfessionCarModuleController@delCarModule');
+            // 管理申办的职业资格证书
+            Route::get('managecertificate', 'CertificateBidController@certificateList');
+            Route::get('managecertificates', 'CertificateBidController@getCertificate');
+            Route::get('managecertificate/{id}/edit', 'CertificateBidController@editCertificate');
+            Route::put('managecertificate', 'CertificateBidController@editCertificate');
+            Route::post('managecertificate/reporting', 'CertificateBidController@reportingCertificate');
+            Route::post('managecertificate/check', 'CertificateBidController@checkCertificate');
+            Route::delete('managecertificate', 'CertificateBidController@delCertificate');
         });
         });
     });
@@ -286,5 +294,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         Route::get('mymessage', 'NoticeController@myMessageList')->middleware('checkifregister');
         Route::get('mymessages', 'NoticeController@getMyMessage');
         Route::post('readmymessage', 'NoticeController@readMyMessage');
+        // 职业证书申办功能
+        Route::get('certificatebid', 'CertificateBidController@carBidList')->middleware('checkifregister');
+        Route::get('certificatebids', 'CertificateBidController@getCarBid');
+        Route::get('certificatebid/{id}/create', 'CertificateBidController@addCarBid');
+        Route::post('certificatebid', 'CertificateBidController@addCarBid');
     });
 });

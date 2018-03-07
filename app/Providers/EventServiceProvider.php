@@ -20,6 +20,10 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\LoginEvent' => [
             'App\Listeners\LoginListener',
         ],
+        //添加年审提醒功能的监听器
+        'App\Events\AnnualEvent' => [
+            'App\Listeners\AnnualListener',
+        ],
     ];
 
     /**

@@ -107,6 +107,15 @@ function technician_title(){
 function message_type(){
     $message_type = [
         '1' => '培训信息反馈',
+        '2' => '职业资格证书申报的审核信息反馈',
     ];
     return $message_type;
+}
+// 发证机构
+function fzjg(){
+    $fzjg = [
+        '0' => '最高人民检察院',
+        '1' => '贵州省人民检察院',
+    ];
+    return $fzjg;
 }

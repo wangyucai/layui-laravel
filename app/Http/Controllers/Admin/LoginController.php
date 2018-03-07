@@ -10,8 +10,11 @@ use Gregwar\Captcha\PhraseBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Events\LoginEvent; 
+use App\Events\AnnualEvent; 
 use Jenssegers\Agent\Agent; 
 use Carbon\Carbon;
+use App\Model\Identifyinfo;  
+use App\Model\CertificateBid;
 
 class LoginController extends Controller
 {
@@ -35,6 +38,7 @@ class LoginController extends Controller
         if ($re) {
             //登录成功，触发事件
             event(new LoginEvent(Auth::guard('admin')->user(), new Agent(), \Request::getClientIp(), Carbon::now()));
+            event(new AnnualEvent(Auth::guard('admin')->user(), Carbon::now()));
             return ajaxSuccess();
         } else {
             return ajaxError($service->getError(), $service->getHttpCode());

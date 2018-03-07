@@ -22,7 +22,7 @@
             <!-- 显示/隐藏菜单 -->
             <a href="javascript:;" class="hideMenu"><i class="layui-icon">&#xe638;</i></a>
             <!-- 天气信息 -->
-            <div class="weather" pc>
+            {{-- <div class="weather" pc>
                 <div id="tp-weather-widget"></div>
                 <script>(function(T,h,i,n,k,P,a,g,e){g=function(){P=h.createElement(i);a=h.getElementsByTagName(i)[0];P.src=k;P.charset="utf-8";P.async=1;a.parentNode.insertBefore(P,a)};T["ThinkPageWeatherWidgetObject"]=n;T[n]||(T[n]=function(){(T[n].q=T[n].q||[]).push(arguments)});T[n].l=+new Date();if(T.attachEvent){T.attachEvent("onload",g)}else{T.addEventListener("load",g,false)}}(window,document,"script","tpwidget","//widget.seniverse.com/widget/chameleon.js"))</script>
                 <script>tpwidget("init", {
@@ -40,12 +40,12 @@
                         "hash": "039da28f5581f4bcb5c799fb4cdfb673"
                     });
                     tpwidget("show");</script>
-            </div>
+            </div> --}}
             <!-- 顶部右侧菜单 -->
             <ul class="layui-nav top_menu">
-                <li class="layui-nav-item showNotice" id="showNotice" pc="">
+               {{--  <li class="layui-nav-item showNotice" id="showNotice" pc="">
                     <a href="javascript:;"><i class="iconfont icon-gonggao"></i><cite>系统公告</cite></a>
-                </li>
+                </li> --}}
                 <li class="layui-nav-item" pc>
                     <a href="javascript:;">
                         @if($user->face)

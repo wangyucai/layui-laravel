@@ -16,7 +16,7 @@
 		<div class="layui-form-item">
 			<label class="layui-form-label">证书编号</label>
 			<div class="layui-input-block">
-				<input type="text" class="layui-input" name="zsbh" lay-verify="required" placeholder="证书编号">
+				<input type="text" class="layui-input" name="zsbh" lay-verify="required|zsbh" placeholder="证书编号">
 			</div>
 		</div>
 		<div class="layui-form-item">

@@ -3,11 +3,18 @@ layui.config({base: '/layadmin/modul/common/'}).use(['form','dialog','his'],func
         dialog = layui.dialog,
         his = layui.his,
         $ = layui.$;
-        
-    form.on("submit(editinscertificate)",function(data){
+    // 自定义验证规则 
+    form.verify({
+        zsbh : function(value, item){
+            if(value.length != 15){
+                return "证书编号必须是15位";
+            }
+        },
+    })  
+    form.on("submit(editcarmodule)",function(data){
         var loadIndex = dialog.load('数据提交中，请稍候');
         his.ajax({
-            url: '/admin/inscertificate'
+            url: '/admin/professioncarmodule'
             ,type: 'put'
             ,data: data.field
             ,contentType: 'form'

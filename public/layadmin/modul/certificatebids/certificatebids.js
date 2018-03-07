@@ -6,8 +6,8 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
         ,$ = layui.$;
 
     table.render({
-        elem: '#professioncarmodules'
-        ,url: '/admin/professioncarmodules' //数据接口
+        elem: '#certificatebids'
+        ,url: '/admin/certificatebids' //数据接口
         ,method: 'get'
         ,page: true //开启分页
         ,limit: 10
@@ -35,32 +35,13 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
         ,even: false //开启隔行背景
     });
 
-    table.on('tool(professioncarmoduletab)', function(obj){
+    table.on('tool(certificatebidtab)', function(obj){
         var data = obj.data;      //获得当前行数据
         var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
         var tr = obj.tr;          //获得当前行 tr 的DOM对象
 
-        if (layEvent == 'edit') {
-            dialog.open('编辑职业资格证书模板', '/admin/professioncarmodule/'+data.id+'/edit');
-        } else if (layEvent == 'del') {
-            dialog.confirm('确认删除该职业资格证书模板么', function () {
-                var loadIndex = dialog.load('删除中，请稍候');
-                his.ajax({
-                    url: '/admin/professioncarmodule'
-                    ,type: 'delete'
-                    ,data: {id: data.id}
-                    ,complete: function () {
-                        dialog.close(loadIndex);
-                    }
-                    ,error: function (msg) {
-                        dialog.error(msg);
-                    }
-                    ,success: function () {
-                        dialog.msg('删除成功');
-                        obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                    }
-                });
-            })
+        if (layEvent == 'detail') {
+            dialog.open('申办职业资格证书模板', '/admin/certificatebid/'+data.id+'/create');
         }
     });
 
@@ -78,7 +59,7 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
             query.where.sortField = sortObj.field;   // 排序字段
             query.where.order = sortObj.type;        //排序方式
         }
-        table.reload('professioncarmodules', query);
+        table.reload('certificatebids', query);
     }
 
     // 搜索
@@ -88,13 +69,8 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
     });
 
     // 排序
-    table.on('sort(professioncarmoduletab)', function (obj) {
+    table.on('sort(certificatebidtab)', function (obj) {
         var cond = $('.search_input').val();
         flushTable(cond, obj);
-    });
-
-    // 添加职业资格证书模板
-    $('.add_btn').click(function () {
-        dialog.open('添加职业资格证书模板', '/admin/professioncarmodule/create');
     });
 });

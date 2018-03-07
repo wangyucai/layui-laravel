@@ -51,8 +51,8 @@ class ProfessionCarModuleService extends BaseService
         $professionCarModule->zsbh        = $data['zsbh'];
         $professionCarModule->ywlb        = implode(',', $data['ywlb']);
         $professionCarModule->fzjg        = $data['fzjg'];
-        $inscertificate->zsyxq            = strtotime($data['zsyxq']);
-        $inscertificate->bz          = $data['bz'];
+        $professionCarModule->zsyxq       = $data['zsyxq'];
+        $professionCarModule->bz          = $data['bz'];
 
         $re = $professionCarModule->save();
         if ($re === false) {

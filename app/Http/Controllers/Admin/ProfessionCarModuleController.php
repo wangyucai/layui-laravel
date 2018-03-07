@@ -70,23 +70,26 @@ class ProfessionCarModuleController extends Controller
             $this->validate($request, [
              // 
             ]);
+            $data = $request->all();
             $professionCarModuleService = new ProfessionCarModuleService();
             $re = $professionCarModuleService->editCarModule($data);
             if (!$re) return ajaxError($professionCarModuleService->getError(), $professionCarModuleService->getHttpCode());
             return ajaxSuccess([], '', 'success', HttpCode::CREATED);
         } else {
+            // 获取职业资格证书代码表中证书名称
+            $professioncarcodes = ProfessionCarCode::all();
             $professioncarmodule = ProfessionCarModule::find($request->id)->toArray();
             // 获取鉴定业务范围
             $businesses = Business::all()->toArray();
             $hasbusinesses = explode(',', $professioncarmodule['ywlb']);
             foreach ($businesses as &$business) {
-                if (in_array($business['ywlb'], $hasbusinesses)) {
+                if (in_array($business['jdywfw_code'], $hasbusinesses)) {
                     $business['checked'] = 1;
                 } else {
                     $business['checked'] = 0;
                 }
             }
-            return view('admin.professioncarmodules.editCarModule',compact('professioncarmodule','businesses'));
+            return view('admin.professioncarmodules.editCarModule',compact('professioncarmodule','businesses','professioncarcodes'));
         }
     }
     /**
