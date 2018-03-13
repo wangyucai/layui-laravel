@@ -144,6 +144,9 @@
 		    <div class="layui-inline" style="margin-left: 10px;">
 		    	<a class="layui-btn search_btn" style="height: 32px;line-height: 32px;">查询</a>
 		    </div> 	
+		    <div class="layui-inline" style="margin-left: 10px;">
+		    	<a class="layui-btn export_btn" style="height: 32px;line-height: 32px;">导出</a>
+		    </div> 
 		</div>
 		<div class="layui-inline">
 			<div class="layui-form-mid layui-word-aux"></div>
@@ -163,6 +166,10 @@
 		@{{# } }}
 	</script>
 	<script type="text/html" id="op">
+		<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">
+			<i class="layui-icon">&#xe623;</i>
+			查看
+		</a>
 		<a class="layui-btn layui-btn-xs edit_user" lay-event="edit">
 			<i class="layui-icon">&#xe642;</i>
 			编辑

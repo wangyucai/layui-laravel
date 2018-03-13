@@ -39,6 +39,10 @@ class IndexController extends Controller
     {
         return view('admin.nocheck');
     }
+    public function checked()
+    {
+        return view('admin.checked');
+    }
 
     /**
      * 首页

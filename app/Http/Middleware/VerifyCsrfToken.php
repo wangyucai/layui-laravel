@@ -52,5 +52,9 @@ class VerifyCsrfToken extends Middleware
         ,'/admin/managecertificate'
         ,'/admin/managecertificate/reporting'
         ,'/admin/managecertificate/check'
+        ,'/admin/completeinfouser/edit'
+        ,'/admin/exportuser'
+        ,'/admin/assetunit'
+        ,'/admin/equipmentasset'
     ];
 }

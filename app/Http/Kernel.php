@@ -63,5 +63,6 @@ class Kernel extends HttpKernel
         'edituserbutton' => \App\Http\Middleware\EditUserButton::class,
         'logs' => \App\Http\Middleware\LogsMiddleware::class,
         'ifcompleteinfo' => \App\Http\Middleware\CheckIfCompleteInfo::class,
+        'checkedcompleteinfo' => \App\Http\Middleware\CheckedCompleteInfo::class,
     ];
 }

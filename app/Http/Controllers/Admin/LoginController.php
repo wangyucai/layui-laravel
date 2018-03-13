@@ -30,9 +30,10 @@ class LoginController extends Controller
         $this->validate($request, [
             'username' => 'required',
             'password' => 'required',
-            'code' => 'required'
+            // 'code' => 'required'
         ]);
-        if (strtolower($request->code) != session('loginCaptcha')) return ajaxError('验证码错误', HttpCode::BAD_REQUEST);
+        // 去掉验证码
+        // if (strtolower($request->code) != session('loginCaptcha')) return ajaxError('验证码错误', HttpCode::BAD_REQUEST);
         $service = new AdminService();
         $re = $service->login($request->username, $request->password, (bool)$request->remember);
         if ($re) {

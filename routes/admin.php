@@ -20,12 +20,19 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         Route::get('main', 'IndexController@main');
         Route::get('nocomplete', 'IndexController@noComplete');
         Route::get('nocheck', 'IndexController@noCheck');
+        Route::get('checked', 'IndexController@checked');
+        // 修改密码操作（自己有修改自己的密码权限）
+        Route::get('user/password/edit', 'IndexController@editPassword');
+        Route::put('user/password', 'IndexController@editPassword');
+        // 我已完善的人事信息页面
+        Route::get('completeinfouser/detail', 'RegisterController@myInfo');
+        // 编辑我已完善的人事信息
+        Route::get('completeinfouser/edit', 'Registercontroller@editMyInfo');
+        Route::put('completeinfouser/edit', 'Registercontroller@editMyInfo');
         /*
          * 权限管理模块
         */
-        Route::group(['middleware' => 'rbac'], function () {
-            Route::get('user/password/edit', 'IndexController@editPassword');
-            Route::put('user/password', 'IndexController@editPassword');
+        Route::group(['middleware' => 'rbac'], function () {           
             // 管理员管理
             Route::get('userslist', 'RuleController@adminsPage');
             Route::get('users', 'RuleController@getAdmins');
@@ -88,6 +95,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             // 注册用户管理
             Route::get('registeruser', 'RegisterController@registerList');
             Route::get('registerusers', 'RegisterController@getRegisterUsers');
+            Route::get('registeruser/{id}/detail', 'Registercontroller@lookRegisterUser');
             Route::get('registeruser/{id}/edit', 'RegisterController@editRegisterUser')->middleware('edituserbutton');
             Route::put('registeruser', 'RegisterController@editRegisterUser');
             Route::patch('registeruser', 'RegisterController@activeRegisterUser');
@@ -95,9 +103,13 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             // 完善人事信息用户管理
             Route::get('completeinfouser', 'RegisterController@completeInfoUserList');
             Route::get('completeinfousers', 'RegisterController@getCompleteInfoUsers');
+            Route::get('completeinfouser/{id}/detail', 'Registercontroller@lookCompleteInfoUser');
             Route::get('completeinfouser/{id}/edit', 'Registercontroller@editCompleteInfoUser')->middleware('edituserbutton');
             Route::put('completeinfouser', 'RegisterController@editCompleteInfoUser');
             Route::patch('completeinfouser', 'RegisterController@activeCompleteInfoUser');
+            Route::post('exportuser', 'RegisterController@exportCompleteInfoUser');
+            Route::get('exportuser/downloadfile/{file}', 'RegisterController@downloadExcel')->name('download');
+
             // Route::delete('completeinfouser', 'RegisterController@delAdmin');
             // 信息化信息统计查询
             Route::get('allinformatization', 'InformatizationController@allInformatizationList');
@@ -242,14 +254,34 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             Route::post('managecertificate/reporting', 'CertificateBidController@reportingCertificate');
             Route::post('managecertificate/check', 'CertificateBidController@checkCertificate');
             Route::delete('managecertificate', 'CertificateBidController@delCertificate');
+
+            /*
+             * 装备管理子系统
+            */
+            // 资产单位代码管理
+            Route::get('assetunit', 'AssetUnitController@assetUnitList');
+            Route::get('assetunits', 'AssetUnitController@getAssetUnit');
+            Route::get('assetunit/create', 'AssetUnitController@addAssetUnit');
+            Route::post('assetunit', 'AssetUnitController@addAssetUnit');
+            Route::get('assetunit/{id}/edit', 'AssetUnitController@editAssetUnit');
+            Route::put('assetunit', 'AssetUnitController@editAssetUnit');
+            Route::delete('assetunit', 'AssetUnitController@delAssetUnit');
+            // 检察技术装备资产表的操作
+            Route::get('equipmentasset', 'EquipmentAssetController@equipmentAssetList');
+            Route::get('equipmentassets', 'EquipmentAssetController@getEquipmentAsset');
+            Route::get('equipmentasset/create', 'EquipmentAssetController@addEquipmentAsset');
+            Route::post('equipmentasset', 'EquipmentAssetController@addEquipmentAsset');
+            Route::get('equipmentasset/{id}/edit', 'EquipmentAssetController@editEquipmentAsset');
+            Route::put('equipmentasset', 'EquipmentAssetController@editEquipmentAsset');
+            Route::delete('equipmentasset', 'EquipmentAssetController@delEquipmentAsset');
         });
         });
     });
     
         // 完善人事信息
-        Route::get('completeuserinfo', 'RegisterController@completeUserInfo')->middleware('checkifregister');
-        Route::post('completeuserinfo', 'RegisterController@completeUserInfo')->middleware('checkifregister');
-        Route::post('completeuserinfo/upload', 'RegisterController@uploadFace')->middleware('checkifregister');
+        Route::get('completeuserinfo', 'RegisterController@completeUserInfo')->middleware('checkifregister','checkedcompleteinfo');
+        Route::post('completeuserinfo', 'RegisterController@completeUserInfo')->middleware('checkifregister','checkedcompleteinfo');
+        Route::post('completeuserinfo/upload', 'RegisterController@uploadFace')->middleware('checkifregister','checkedcompleteinfo');
 
     // 进行下面操作前需要先完善人事信息 
     Route::group(['middleware' => 'ifcompleteinfo'], function () {

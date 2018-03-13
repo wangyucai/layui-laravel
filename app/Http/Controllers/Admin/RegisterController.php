@@ -16,6 +16,7 @@ use Auth;
 use App\Handlers\ImageUploadHandler;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Excel;
 
 class RegisterController extends Controller
 {
@@ -101,6 +102,21 @@ class RegisterController extends Controller
         if (!$re) return ajaxError('修改失败', HttpCode::BAD_REQUEST);
         return ajaxSuccess();
     }
+    
+    /**
+     * 查看注册用户信息
+     * @param Request $request
+     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function lookRegisterUser(Request $request)
+    {
+        $companies = Company::where('dwdm','!=','100000')->get();
+        $danwei = select_company('sjdm', 'dwdm', $companies, '100000', '=', '1');
+        $admin = Admin::with('roles')->find($request->id)->toArray();
+        // 该单位的所有部门
+        $bumen = Mechanism::where('company_dwdm',$admin['company_dwdm'])->get()->toArray();
+        return view('admin.register.lookRegisterUser', ['admin' => $admin, 'danwei'=>$danwei, 'bumen' => $bumen]);
+    }
     /**
      * 编辑注册用户
      * @param Request $request
@@ -180,6 +196,7 @@ class RegisterController extends Controller
             if (!$re) return ajaxError($adminService->getError(), $adminService->getHttpCode());
             return ajaxSuccess();
         } else {
+            $myinfo = Auth::guard('admin')->user();
             $company_dwdm = $user = Auth::guard('admin')->user()->company_dwdm;
             $uid = $user = Auth::guard('admin')->user()->id;
             $dwjb = Company::where('dwdm',$company_dwdm)->value('dwjb');
@@ -191,7 +208,7 @@ class RegisterController extends Controller
             $administrative_duties = administrative_duties();
             $administrative_level = administrative_level();
             $technician_title = technician_title();
-            return view('admin.register.completeUserInfo', compact('dwjb','nations','political_outlook','education','academic_degree','procurator','administrative_duties','administrative_level','technician_title','uid'));
+            return view('admin.register.completeUserInfo', compact('dwjb','nations','political_outlook','education','academic_degree','procurator','administrative_duties','administrative_level','technician_title','uid','myinfo'));
         }
     }
     // 上传头像
@@ -245,11 +262,7 @@ class RegisterController extends Controller
             $danwei = select_company('sjdm', 'dwdm', $companies, '520000', '=', '1');
         }else{
             $danwei = Company::where('dwdm',$my_dwdm)->get();
-            // $danwei = select_company('sjdm', 'dwdm', $companies, '520000', '=', '1');
-        }
-        
-        
-        // print_r($danwei);die();
+        }  
         return view('admin.register.completeInfoUser', compact('nation_arr','political_outlook','education','academic_degree','procurator','administrative_level','technician_title','danwei','my_dwjb'));
     }
     /**
@@ -269,6 +282,64 @@ class RegisterController extends Controller
         return ajaxSuccess($res['data'], $res['count']);
     }
     /**
+     * 导出获取后台完善信息用户分页数据
+     * @param Request $request
+     * @param Admin $admin
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function exportCompleteInfoUser(Request $request, Admin $admin){//导出数据
+        $data = $request->all();
+        $data['company_dwdm'] = Auth::guard('admin')->user()->company_dwdm;
+        $data['dwjb'] = Auth::guard('admin')->user()->dwjb;
+        $next_companies = Company::where('sjdm',$data['company_dwdm'])->select('dwdm')->get()->toArray();
+        $data['next_companies_dwdm'] = $next_companies;
+        $res = $admin->exportCompleteInfoUser($data);
+        // 导出结果
+        // $exportResult = $res['data'];
+        // // print_r($exportResult);die();
+        // //通过查询得到数据
+        // $title = [[ 0 => '姓名', 1 => '性别', 2 => '民族']]; 
+        // $export = null; 
+        // foreach ($exportResult as $key => $val) {
+        //     $export[$key][0] = $val['real_name']; 
+        //     $export[$key][1] = $val['sex']; 
+        //     $export[$key][2] = $val['nation']; 
+        //     // $export[$key][3] = $val->birth; 
+        //     // $export[$key][4] = $val->native_place; 
+        //     // $export[$key][5] = $val->native_heath; 
+        //     // $export[$key][6] = $val->tel; 
+        //     // $export[$key][7] = $val->dwqc; 
+        //     // $export[$key][8] = $val->nsjgmc; 
+        //     // $export[$key][9] = $val->tel_hm; 
+        //     // $export[$key][10] = $val->political_outlook; 
+        // } 
+        // $cellData = array_merge($title,$export); 
+        // print_r($cellData);die();
+        $cellData = [
+                ['学号','姓名','成绩'],
+                ['10001','AAAAA','99'],
+                ['10001','AAAAA','99'],
+                ['10001','AAAAA','99'],
+                ['10001','AAAAA','99'],
+        ];
+        $new_file_name = '完善信息用户列表_'.date('Y-m-d H:i:s');
+        Excel::create($new_file_name,function($excel) use ($cellData) {
+            $excel->sheet('完善信息用户列表', function($sheet) use ($cellData) {
+                $sheet->rows($cellData); 
+            }); 
+        })->store('xls',public_path('uploads/excel/exports')); 
+        $res['url'] = route('download',['file'=>$new_file_name]);
+        return ajaxSuccess($res['url']);
+    }
+    /**
+     * 下载导出excel的路由
+     */
+    public function downloadExcel($file_name)
+    {
+        $file =  public_path('uploads\excel\exports\\'.$file_name.'.xls');
+        return response()->download($file);
+    }
+    /**
      * 审核后台完善信息用户
      */
     public function activeCompleteInfoUser(Request $request)
@@ -276,6 +347,24 @@ class RegisterController extends Controller
         $re = Admin::where('id', $request->id)->update(['perinfor_if_check' => $request->perinfor_if_check]);
         if (!$re) return ajaxError('修改失败', HttpCode::BAD_REQUEST);
         return ajaxSuccess();
+    }
+    /**
+     * 查看已完善人事信息的用户信息
+     * @param Request $request
+     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function lookCompleteInfoUser(Request $request)
+    {
+        $admin = Admin::with('roles')->find($request->id)->toArray();
+        $nation = Nation::where('id',$admin['nation'])->value('nation_name');
+        $political_outlook = political_outlook();
+        $education = education();
+        $academic_degree = academic_degree();
+        $procurator = procurator();
+        $administrative_duties = administrative_duties();
+        $administrative_level = administrative_level();
+        $technician_title = technician_title();
+        return view('admin.register.lookCompleteInfoUser', compact('admin','nation','political_outlook','education','academic_degree','procurator','administrative_duties','administrative_level','technician_title'));
     }
     /**
      * 编辑完善人事信息用户
@@ -300,6 +389,49 @@ class RegisterController extends Controller
             $administrative_level = administrative_level();
             $technician_title = technician_title();
             return view('admin.register.editCompleteInfoUser', compact('admin','nations','political_outlook','education','academic_degree','procurator','administrative_duties','administrative_level','technician_title'));
+        }
+    }
+    /**
+     * 查看我已完善人事信息
+     * @param Request $request
+     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function myInfo(Request $request)
+    {
+        $admin = Auth::guard('admin')->user()->toArray();
+        $nation = Nation::where('id',$admin['nation'])->value('nation_name');
+        $political_outlook = political_outlook();
+        $education = education();
+        $academic_degree = academic_degree();
+        $procurator = procurator();
+        $administrative_duties = administrative_duties();
+        $administrative_level = administrative_level();
+        $technician_title = technician_title();
+        return view('admin.register.myInfo', compact('admin','nation','political_outlook','education','academic_degree','procurator','administrative_duties','administrative_level','technician_title'));
+    }
+    /**
+     * 编辑我的已完善的人事信息
+     * @param Request $request
+     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function editMyInfo(Request $request)
+    {
+        if ($request->isMethod('put')) {
+            $adminService = new AdminService();
+            $re = $adminService->editCompleteInfoAdmin($request->all());
+            if (!$re) return ajaxError($adminService->getError(), $adminService->getHttpCode());
+            return ajaxSuccess();
+        } else {
+            $admin = Auth::guard('admin')->user()->toArray();
+            $nations = Nation::all();
+            $political_outlook = political_outlook();
+            $education = education();
+            $academic_degree = academic_degree();
+            $procurator = procurator();
+            $administrative_duties = administrative_duties();
+            $administrative_level = administrative_level();
+            $technician_title = technician_title();
+            return view('admin.register.editMyInfo', compact('admin','nations','political_outlook','education','academic_degree','procurator','administrative_duties','administrative_level','technician_title'));
         }
     }
 }

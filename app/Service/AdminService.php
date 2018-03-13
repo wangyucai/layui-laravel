@@ -19,7 +19,14 @@ class AdminService extends BaseService
      */
     public function login(string $username, string $password, bool $remember) : bool
     {
-        $admin = Admin::where('username', $username)->first();
+        // 匹配是否是手机号登陆
+        $isMathed = preg_match('/^1[3|4|5|7|8]\d{9}$/',$username, $matches);
+        if($isMathed==1){
+            $admin = Admin::where('tel', $username)->first();
+        }else{
+            $admin = Admin::where('username', $username)->first(); 
+        }
+        
         if (!$admin) {
             $this->error = '账号或密码错误';
             $this->httpCode = HttpCode::NOT_FOUND;

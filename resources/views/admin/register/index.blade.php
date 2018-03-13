@@ -28,11 +28,11 @@
         </div>
 
         <div class="layui-form-item">
-            <input class="layui-input" name="tel" placeholder="手机号码" lay-verify="required|tel" type="text" autocomplete="off">
+            <input class="layui-input" name="tel" placeholder="手机全号" lay-verify="required|tel" type="text" autocomplete="off">
         </div>
         
         <div class="layui-form-item">
-            <input class="layui-input" name="tel_hm" placeholder="电话号码" lay-verify="required|tel_hm" type="text" autocomplete="off">
+            <input class="layui-input" name="tel_hm" placeholder="集团短号或座机号" lay-verify="required|tel_hm" type="text" autocomplete="off">
         </div>
         <div class="layui-form-item">
 	      	<select name="company_dwdm" lay-filter="danwei" lay-verify="required|danwei">

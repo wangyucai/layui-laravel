@@ -12,6 +12,7 @@
         "jenssegers/agent": "^2.6",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
+        "maatwebsite/excel": "^2.1",
         "overtrue/laravel-filesystem-qiniu": "^1.0",
         "zhuzhichao/ip-location-zh": "^2.4"
     },

@@ -25,6 +25,10 @@
 		@{{# } }}
 	</script>
 	<script type="text/html" id="op">
+		<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">
+			<i class="layui-icon">&#xe623;</i>
+			查看
+		</a>
 		<a class="layui-btn layui-btn-xs edit_user" lay-event="edit">
 			<i class="layui-icon">&#xe642;</i>
 			编辑

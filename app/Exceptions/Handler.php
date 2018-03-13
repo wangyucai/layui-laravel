@@ -67,6 +67,10 @@ class Handler extends ExceptionHandler
             if ($request->expectsJson()) return ajaxError('您的人事信息还未审核', HttpCode::UNAUTHORIZED);
             return redirect('/admin/nocheck');
         }
+        if ($exception instanceof CheckedUserInfoException) {
+            if ($request->expectsJson()) return ajaxError('您的人事信息审核已通过', HttpCode::UNAUTHORIZED);
+            return redirect('/admin/checked');
+        }
         return parent::render($request, $exception);
     }
 }

@@ -1,7 +1,7 @@
 @extends("admin.layout.main")
 
 @section("content")
-	<form class="layui-form layui-form-pane" >
+	<form class="layui-form layui-form-pane">
 	<input type="hidden" name="uid" value="{{ $admin['id'] }}">
 	<div class="layui-form-item">
 		<div class="layui-inline">		

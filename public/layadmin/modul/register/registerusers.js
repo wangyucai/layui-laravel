@@ -22,7 +22,7 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], 
             ,{field: 'dwqc', title: '单位'}
             ,{field: 'nsjgmc', title: '部门'}
             ,{field: 'register_if_check', title: '是否审核', width: 80, templet: '#active'}
-            ,{title: '操作', width: 160, toolbar: '#op'}
+            ,{title: '操作', width: 260, toolbar: '#op'}
         ]]
         ,response: {
             statusName: 'code'
@@ -65,8 +65,11 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], 
                     }
                 });
             });
+        }else if (layEvent == 'detail') {
+            dialog.open('查看注册用户', '/admin/registeruser/'+data.id+'/detail');
+
         } else if (layEvent == 'edit') {
-            dialog.open('编辑管理员', '/admin/registeruser/'+data.id+'/edit');
+            dialog.open('编辑注册用户', '/admin/registeruser/'+data.id+'/edit');
 
         } else if (layEvent == 'del') {
             dialog.confirm('确认删除改用户么', function () {

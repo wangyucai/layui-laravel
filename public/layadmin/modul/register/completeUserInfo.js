@@ -89,9 +89,12 @@ layui.config({base: '/layadmin/modul/common/'}).use(['form', 'dialog','his'],fun
                 dialog.error(msg);
             }
             ,success: function (msg, data, meta) {
-                dialog.msg("您的人事信息已完善！");
-                dialog.closeAll('iframe');
-                parent.location.reload();
+                layer.msg('您的人事信息已完善！请等待本级管理员审核',{btn:['确定'],yes:function(index,layero){
+                       dialog.closeAll('iframe');
+                       parent.location.reload();
+                }});
+                // dialog.msg("您的人事信息已完善！");
+                
             }
         });
 

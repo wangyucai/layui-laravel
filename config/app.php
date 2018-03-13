@@ -178,6 +178,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class, //客户端识别扩展包
         Overtrue\LaravelFilesystem\Qiniu\QiniuStorageServiceProvider::class,//七牛云
+        Maatwebsite\Excel\ExcelServiceProvider::class,//excel
 
     ],
 
@@ -228,6 +229,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
     ],
 
