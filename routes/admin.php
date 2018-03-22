@@ -258,6 +258,14 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             /*
              * 装备管理子系统
             */
+            // 仓库管理
+            Route::get('warehouse', 'WarehouseController@warehouseList');
+            Route::get('warehouses', 'WarehouseController@getWarehouse');
+            Route::get('warehouse/create', 'WarehouseController@addWarehouse');
+            Route::post('warehouse', 'WarehouseController@addWarehouse');
+            Route::get('warehouse/{id}/edit', 'WarehouseController@editWarehouse');
+            Route::put('warehouse', 'WarehouseController@editWarehouse');
+            Route::delete('warehouse', 'WarehouseController@delWarehouse');
             // 资产单位代码管理
             Route::get('assetunit', 'AssetUnitController@assetUnitList');
             Route::get('assetunits', 'AssetUnitController@getAssetUnit');
@@ -274,10 +282,43 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             Route::get('equipmentasset/{id}/edit', 'EquipmentAssetController@editEquipmentAsset');
             Route::put('equipmentasset', 'EquipmentAssetController@editEquipmentAsset');
             Route::delete('equipmentasset', 'EquipmentAssetController@delEquipmentAsset');
+            //采购经手人入库
+            Route::get('equipmentasset/{id}/inbound', 'EquipmentAssetController@addInbound');
+            Route::post('equipmentasset/inbound', 'EquipmentAssetController@addInbound');
+            // 下载资产入库表
+            Route::post('equipmentasset/download', 'EquipmentAssetController@downloadInbound');
+            // 入库资产管理
+            Route::get('inboundasset', 'AssetClaimController@InboundAssetList');
+            Route::get('inboundassets', 'AssetClaimController@getInboundAsset');
+            Route::get('inboundasset/{id}/edit', 'AssetClaimController@editInboundAsset');
+            Route::put('inboundasset', 'AssetClaimController@editInboundAsset');
+            Route::delete('inboundasset', 'AssetClaimController@delInboundAsset');
+            Route::post('inboundasset/check', 'AssetClaimController@checkInboundAsset');
+            // 申领资产管理
+            Route::get('allassetclaim ', 'AssetClaimController@allAssetClaimList');
+            Route::get('allassetclaims', 'AssetClaimController@getAllAssetClaim');
+            Route::post('allassetclaim/check', 'AssetClaimController@checkAssetclaim');
+            // 设备库存台账统计(资产统计)
+            Route::get('assetstatistic', 'AssetClaimController@assetStatisticList');
+            Route::get('assetstatistics', 'AssetClaimController@getAssetStatistic');
+            // 设备身份管理
+            Route::get('deviceidentity/{id}', 'AssetClaimController@deviceIdentityList');
+            Route::get('deviceidentities', 'AssetClaimController@getDeviceIdentity');
+            Route::get('deviceidentity/{id}/edit', 'AssetClaimController@editDeviceIdentity');
+            Route::put('deviceidentity', 'AssetClaimController@editDeviceIdentity');
+            Route::post('deviceidentity/bf', 'AssetClaimController@bfDeviceIdentity');
+            // 固定资产管理模块
+            Route::get('fixedasset', 'FixedAssetController@fixedAssetList');
+            Route::get('fixedassets', 'FixedAssetController@getFixedAsset');
+            Route::get('fixedasset/create', 'FixedAssetController@addFixedAsset');
+            Route::post('fixedasset', 'FixedAssetController@addFixedAsset');
+            Route::get('fixedasset/{id}/edit', 'FixedAssetController@editFixedAsset');
+            Route::put('fixedasset', 'FixedAssetController@editFixedAsset');
+            Route::delete('fixedasset', 'FixedAssetController@delFixedAsset');
         });
         });
     });
-    
+        
         // 完善人事信息
         Route::get('completeuserinfo', 'RegisterController@completeUserInfo')->middleware('checkifregister','checkedcompleteinfo');
         Route::post('completeuserinfo', 'RegisterController@completeUserInfo')->middleware('checkifregister','checkedcompleteinfo');
@@ -331,5 +372,22 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         Route::get('certificatebids', 'CertificateBidController@getCarBid');
         Route::get('certificatebid/{id}/create', 'CertificateBidController@addCarBid');
         Route::post('certificatebid', 'CertificateBidController@addCarBid');
+
+        // 资产领用功能
+        Route::get('assetclaim', 'AssetClaimController@assetClaimList')->middleware('checkifregister');
+        Route::get('assetclaims', 'AssetClaimController@getAssetClaim');
+        Route::get('assetclaim/{id}/create', 'AssetClaimController@addAssetClaim');
+        Route::post('assetclaim', 'AssetClaimController@addAssetClaim');
+        // Route::get('assetclaim/{id}/edit', 'EquipmentAssetController@editEquipmentAsset');
+        // Route::put('assetclaim', 'EquipmentAssetController@editEquipmentAsset');
+        // Route::delete('assetclaim', 'EquipmentAssetController@delEquipmentAsset');
+
+        // 我的申领资产
+        Route::get('myassetclaim', 'AssetClaimController@myAssetClaimList')->middleware('checkifregister');
+        Route::get('myassetclaims', 'AssetClaimController@getMyAssetClaim');
+        Route::post('myassetclaims/download', 'AssetClaimController@downloadMyAssetClaim');
+        // 我申领的资产的设备
+        Route::get('myassetdevice/{id}', 'AssetClaimController@myAssetDeviceList');
+        Route::get('myassetdevices', 'AssetClaimController@getMyAssetDevice');
     });
 });

@@ -6,8 +6,8 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
         ,$ = layui.$;
 
     table.render({
-        elem: '#equipmentassets'
-        ,url: '/admin/equipmentassets' //数据接口
+        elem: '#assetclaims'
+        ,url: '/admin/assetclaims' //数据接口
         ,method: 'get'
         ,page: true //开启分页
         ,limit: 10
@@ -18,15 +18,11 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
         }    
         ,cols: [[ //表头
             {field: 'id', title: 'ID', width:80, sort: true, fixed: 'left', align: 'left'}
-            ,{field: 'zcbh', title: '资产编号'}
             ,{field: 'zcmc', title: '资产名称'}
             ,{field: 'zcpp', title: '资产品牌'}
             ,{field: 'zcxh', title: '资产型号'}
-            ,{field: 'zcdw_name', title: '资产单位'}
-            ,{field: 'zcxz', title: '资产性质'}
-            ,{field: 'cd', title: '产地'}
-            ,{field: 'bfnx', title: '报废年限(年)'}
-            ,{title: '操作', width: 210, toolbar: '#op'}
+            ,{field: 'kc_nums', title: '库存数量'}
+            ,{title: '操作', width: 320, toolbar: '#op'}
         ]]
         ,response: {
             statusName: 'code'
@@ -38,33 +34,39 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
         ,even: false //开启隔行背景
     });
 
-    table.on('tool(equipmentassettab)', function(obj){
+    table.on('tool(assetclaimtab)', function(obj){
         var data = obj.data;      //获得当前行数据
         var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
         var tr = obj.tr;          //获得当前行 tr 的DOM对象
 
-        if (layEvent == 'edit') {
-            dialog.open('编辑装备资产', '/admin/equipmentasset/'+data.id+'/edit');
-        } else if (layEvent == 'detail') {
-            dialog.open('装备资产入库', '/admin/equipmentasset/'+data.id+'/inbound');
-        } else if (layEvent == 'del') {
-            dialog.confirm('确认删除该装备资产么', function () {
-                var loadIndex = dialog.load('删除中，请稍候');
-                his.ajax({
-                    url: '/admin/equipmentasset'
-                    ,type: 'delete'
-                    ,data: {id: data.id}
-                    ,complete: function () {
-                        dialog.close(loadIndex);
-                    }
-                    ,error: function (msg) {
-                        dialog.error(msg);
-                    }
-                    ,success: function () {
-                        dialog.msg('删除成功');
-                        obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                    }
-                });
+        if (layEvent == 'look') {
+            dialog.open('查看设备资产', '/admin/deviceidentity/'+data.id);
+        }else if (layEvent == 'detail') {
+            dialog.open('申领资产', '/admin/assetclaim/'+data.kc_zcid+'/create');
+        }else if (layEvent == 'down') {
+            dialog.confirm('确认下载资产入库表吗?', function () {
+                var loadIndex = dialog.load('下载中，请稍候');
+                if(data.kc_word_path){
+                    window.location.href = ('/'+data.kc_word_path);
+                    dialog.msg('下载成功');
+                }else{
+                    his.ajax({
+                        url: '/admin/equipmentasset/download'
+                        ,type: 'post'
+                        ,data: data
+                        ,complete: function () {
+                            dialog.close(loadIndex);
+                        }
+                        ,error: function (msg) {
+                            dialog.error(msg);
+                        }
+                        ,success: function (data) {
+                            window.location.href = (data);
+                            dialog.msg('下载成功');
+                        }
+                    }); 
+                }
+                
             })
         }
     });
@@ -83,7 +85,7 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
             query.where.sortField = sortObj.field;   // 排序字段
             query.where.order = sortObj.type;        //排序方式
         }
-        table.reload('equipmentassets', query);
+        table.reload('assetclaims', query);
     }
 
     // 搜索
@@ -93,13 +95,8 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
     });
 
     // 排序
-    table.on('sort(equipmentassettab)', function (obj) {
+    table.on('sort(assetclaimtab)', function (obj) {
         var cond = $('.search_input').val();
         flushTable(cond, obj);
-    });
-
-    // 添加装备资产
-    $('.add_btn').click(function () {
-        dialog.open('添加装备资产', '/admin/equipmentasset/create');
     });
 });

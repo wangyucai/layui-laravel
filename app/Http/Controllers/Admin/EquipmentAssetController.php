@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\EquipmentAsset;
 use App\Model\AssetUnit;
+use App\Model\Warehouse;
 use Auth;
 use App\Service\EquipmentAssetService;
 
@@ -108,5 +109,51 @@ class EquipmentAssetController extends Controller
         $re = $equipmentAssetService->delEquipmentAsset($request->id);
         if (!$re) return ajaxError($equipmentAssetService->getError(), $equipmentAssetService->getHttpCode());
         return ajaxSuccess();
+    }
+    /**
+     * 装备资产入库操作
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function addInbound(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            $this->validate($request, [
+                // 
+            ]);
+            $data = $request->all();
+            $data['kc_uid'] = Auth::guard('admin')->user()->id;
+            $data['kc_dwdm'] = Auth::guard('admin')->user()->company_dwdm;
+            $data['kc_bmdm'] = Auth::guard('admin')->user()->mechanism_code;
+            $equipmentAssetService = new EquipmentAssetService();
+            $re = $equipmentAssetService->addInbound($data);
+            if (!$re) return ajaxError($equipmentAssetService->getError(), $equipmentAssetService->getHttpCode());
+            return ajaxSuccess([], '', 'success', HttpCode::CREATED);
+        } else {
+            // 资产序号 $id
+            $id = $request->route( 'id' );
+            // 资产状况
+            $zczk_arr =  zczk();
+            // 取入依据
+            $qryj_arr =  qryj();
+            // 获取仓库的信息
+            $ck = Warehouse::all()->toArray();
+            return view('admin.equipmentassets.addInbound', compact('zczk_arr','qryj_arr','ck','id'));
+        }
+    }
+    /**
+     * 下载资产入库表
+     * @param Request $request
+     * @param EquipmentAsset $equipmentasset
+     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function downloadInbound(Request $request, EquipmentAsset $equipmentasset)
+    {      
+        $data = $request->all();
+        $res = $equipmentasset->downloadInbound($data);
+        return  [
+            'code' => 0,
+            'msg' => $res['all_path'],
+        ];
     }
 }

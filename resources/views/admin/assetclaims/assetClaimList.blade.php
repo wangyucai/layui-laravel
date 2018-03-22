@@ -9,30 +9,27 @@
 		    <a class="layui-btn search_btn">查询</a>
 		</div>
 		<div class="layui-inline">
-			<a class="layui-btn layui-btn-normal add_btn">添加</a>
-		</div>
-		<div class="layui-inline">
 			<div class="layui-form-mid layui-word-aux"></div>
 		</div>
 	</blockquote>
-	<table id="equipmentassets" lay-filter="equipmentassettab"></table>
+	<table id="assetclaims" lay-filter="assetclaimtab"></table>
 
 @endsection
 
 @section("js")
 	<script type="text/html" id="op">
+		{{-- <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="look">
+			<i class="layui-icon">&#xe623;</i>
+			查看设备
+		</a> --}}
 		<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">
 			<i class="layui-icon">&#xe623;</i>
-			入库
+			申领
 		</a>
-		<a class="layui-btn layui-btn-xs edit_user" lay-event="edit">
-			<i class="layui-icon">&#xe642;</i>
-			编辑
-		</a>
-		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">
-			<i class="layui-icon"></i>
-			删除
+		<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="down">
+			<i class="layui-icon">&#xe623;</i>
+			下载资产入库表
 		</a>
 	</script>
-	<script type="text/javascript" src="/layadmin/modul/equipmentassets/equipmentassets.js"></script>
+	<script type="text/javascript" src="/layadmin/modul/assetclaims/assetclaims.js"></script>
 @endsection

@@ -1,13 +1,12 @@
-layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'his'], function(){
+layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], function(){
     var table = layui.table
-        ,form = layui.form
         ,dialog = layui.dialog
         ,his = layui.his
         ,$ = layui.$;
 
     table.render({
-        elem: '#equipmentassets'
-        ,url: '/admin/equipmentassets' //数据接口
+        elem: '#warehouses'
+        ,url: '/admin/warehouses' //数据接口
         ,method: 'get'
         ,page: true //开启分页
         ,limit: 10
@@ -18,15 +17,10 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
         }    
         ,cols: [[ //表头
             {field: 'id', title: 'ID', width:80, sort: true, fixed: 'left', align: 'left'}
-            ,{field: 'zcbh', title: '资产编号'}
-            ,{field: 'zcmc', title: '资产名称'}
-            ,{field: 'zcpp', title: '资产品牌'}
-            ,{field: 'zcxh', title: '资产型号'}
-            ,{field: 'zcdw_name', title: '资产单位'}
-            ,{field: 'zcxz', title: '资产性质'}
-            ,{field: 'cd', title: '产地'}
-            ,{field: 'bfnx', title: '报废年限(年)'}
-            ,{title: '操作', width: 210, toolbar: '#op'}
+            ,{field: 'ckbh', title: '仓库编号'}
+            ,{field: 'ckmc', title: '仓库名称'}
+            ,{field: 'ckwz', title: '仓库位置'}
+            ,{title: '操作', width: 160, toolbar: '#op'}
         ]]
         ,response: {
             statusName: 'code'
@@ -38,20 +32,18 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
         ,even: false //开启隔行背景
     });
 
-    table.on('tool(equipmentassettab)', function(obj){
+    table.on('tool(warehousetab)', function(obj){
         var data = obj.data;      //获得当前行数据
         var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
         var tr = obj.tr;          //获得当前行 tr 的DOM对象
 
         if (layEvent == 'edit') {
-            dialog.open('编辑装备资产', '/admin/equipmentasset/'+data.id+'/edit');
-        } else if (layEvent == 'detail') {
-            dialog.open('装备资产入库', '/admin/equipmentasset/'+data.id+'/inbound');
+            dialog.open('编辑仓库', '/admin/warehouse/'+data.id+'/edit');
         } else if (layEvent == 'del') {
-            dialog.confirm('确认删除该装备资产么', function () {
+            dialog.confirm('确认删除该仓库么', function () {
                 var loadIndex = dialog.load('删除中，请稍候');
                 his.ajax({
-                    url: '/admin/equipmentasset'
+                    url: '/admin/warehouse'
                     ,type: 'delete'
                     ,data: {id: data.id}
                     ,complete: function () {
@@ -83,7 +75,7 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
             query.where.sortField = sortObj.field;   // 排序字段
             query.where.order = sortObj.type;        //排序方式
         }
-        table.reload('equipmentassets', query);
+        table.reload('warehouses', query);
     }
 
     // 搜索
@@ -93,13 +85,13 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
     });
 
     // 排序
-    table.on('sort(equipmentassettab)', function (obj) {
+    table.on('sort(warehousetab)', function (obj) {
         var cond = $('.search_input').val();
         flushTable(cond, obj);
     });
 
-    // 添加装备资产
+    // 添加仓库
     $('.add_btn').click(function () {
-        dialog.open('添加装备资产', '/admin/equipmentasset/create');
+        dialog.open('添加仓库', '/admin/warehouse/create');
     });
 });

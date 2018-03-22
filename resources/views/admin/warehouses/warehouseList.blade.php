@@ -2,9 +2,10 @@
 
 @section("content")
 	<blockquote class="layui-elem-quote news_search">
+	<form class="layui-form layui-form-pane">
 		<div class="layui-inline">
 		    <div class="layui-input-inline">
-		    	<input type="text" value="" placeholder="资产名称" class="layui-input search_input">
+		    	<input type="text" value="" placeholder="仓库名称" class="layui-input search_input">
 		    </div>
 		    <a class="layui-btn search_btn">查询</a>
 		</div>
@@ -14,18 +15,15 @@
 		<div class="layui-inline">
 			<div class="layui-form-mid layui-word-aux"></div>
 		</div>
+	</form>
 	</blockquote>
-	<table id="equipmentassets" lay-filter="equipmentassettab"></table>
+	<table id="warehouses" lay-filter="warehousetab"></table>
 
 @endsection
 
 @section("js")
 	<script type="text/html" id="op">
-		<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">
-			<i class="layui-icon">&#xe623;</i>
-			入库
-		</a>
-		<a class="layui-btn layui-btn-xs edit_user" lay-event="edit">
+		<a class="layui-btn layui-btn-xs" lay-event="edit">
 			<i class="layui-icon">&#xe642;</i>
 			编辑
 		</a>
@@ -34,5 +32,5 @@
 			删除
 		</a>
 	</script>
-	<script type="text/javascript" src="/layadmin/modul/equipmentassets/equipmentassets.js"></script>
+	<script type="text/javascript" src="/layadmin/modul/warehouses/warehouses.js"></script>
 @endsection

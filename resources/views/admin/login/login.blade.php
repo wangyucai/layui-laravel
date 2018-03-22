@@ -15,7 +15,6 @@
 <body>
 <img class="bgpic" src="/layadmin/modul/login/bg.jpg">
 <div class="login">
-    <h1>检察院技术管理系统</h1>
     <form class="layui-form">
         <div class="layui-form-item">
             <input class="layui-input" name="username" placeholder="用户名或手机全号" lay-verify="required" type="text" autocomplete="off">

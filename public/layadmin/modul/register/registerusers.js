@@ -46,7 +46,6 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], 
             dialog.confirm('确认进行此操作', function () {
                 var loadIndex = dialog.load('修改中，请稍候');
                 var newStatus = (data.register_if_check == 1) ? 0 : 1;
-                console.log(data);
                 his.ajax({
                     url: '/admin/registeruser'
                     ,type: 'patch'

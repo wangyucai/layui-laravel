@@ -56,5 +56,15 @@ class VerifyCsrfToken extends Middleware
         ,'/admin/exportuser'
         ,'/admin/assetunit'
         ,'/admin/equipmentasset'
+        ,'/admin/warehouse'
+        ,'/admin/equipmentasset/inbound'
+        ,'/admin/equipmentasset/download'
+        ,'/admin/assetclaim'
+        ,'/admin/allassetclaim/check'
+        ,'/admin/myassetclaims/download'
+        ,'/admin/deviceidentity'
+        ,'/admin/deviceidentity/bf'
+        ,'/admin/inboundasset'
+        ,'/admin/inboundasset/check'
     ];
 }

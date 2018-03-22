@@ -16,7 +16,7 @@ class CreateEquipmentAssetsTable extends Migration
         Schema::create('equipment_assets', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('zc_dwdm')->unsigned()->comment('发布资产的用户单位代码');
-            $table->integer('zc_bmdm')->unsigned()->comment('发布资产的用户部门代码');
+            $table->char('zc_bmdm',4)->comment('发布资产的用户部门代码');
             $table->char('zcbh',6)->comment('资产编号');
             $table->string('zcmc',100)->comment('资产名称');
             $table->string('zcpp',100)->comment('资产品牌');
