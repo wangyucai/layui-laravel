@@ -48,7 +48,7 @@
 			<i class="layui-icon">&#xe642;</i>
 			编辑
 		</a>
-		@{{# if(d.bf_time >= 0){ }}
+		@{{# if(d.bf_time <= 0){ }}
 		<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="down">
 			<i class="layui-icon">&#xe623;</i>
 		下载资产报废表
