@@ -3,11 +3,17 @@ layui.config({base: '/layadmin/modul/common/'}).use(['form','dialog','his'],func
         dialog = layui.dialog,
         his = layui.his,
         $ = layui.$;
-
-    form.on("submit(editdeviceidentity)",function(data){
+    // 日期插件
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#gdzc_lqrq'
+        });
+    });
+    form.on("submit(editmyfixedasset)",function(data){
         var loadIndex = dialog.load('数据提交中，请稍候');
         his.ajax({
-            url: '/admin/deviceidentity'
+            url: '/admin/myfixedasset'
             ,type: 'put'
             ,data: data.field
             ,contentType: 'form'
@@ -25,17 +31,18 @@ layui.config({base: '/layadmin/modul/common/'}).use(['form','dialog','his'],func
         });
 
     })
+
     // 上传扫描件
     layui.use('upload', function(){
          var upload = layui.upload;
          var uploadInst = upload.render({
-          elem: '#sbsf_pic'
+          elem: '#gdzc_pic'
           ,type : 'images'
           ,exts: 'jpg|png|gif' //设置一些后缀
-          ,url: '/admin/deviceidentity/upload'
+          ,url: '/admin/myfixedasset/upload'
           ,done: function(res){
               if(res.status == 1){
-                $('#upload_zs').append('<input type="hidden" name="sbsf_pic" value="' + res.sbsf_pic + '" />');
+                $('#upload_zs').append('<input type="hidden" name="gdzc_pic" value="' + res.gdzc_pic + '" />');
                 return layer.msg('上传成功');
               }else{
                 layer.msg(res.message);
@@ -46,4 +53,5 @@ layui.config({base: '/layadmin/modul/common/'}).use(['form','dialog','his'],func
           }
          });
     });
+
 })

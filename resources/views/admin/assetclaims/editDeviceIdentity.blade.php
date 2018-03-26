@@ -15,6 +15,20 @@
 				<input type="text" class="layui-input" name="sbsf_bz" lay-verify="required|sbsf_bz" placeholder="请输入备注" value="{{ $deviceIdentity['sbsf_bz'] }}">
 			</div>
 		</div>
+		<div class="layui-form-item">	
+		<label class="layui-form-label">扫描件上传</label>
+			<div class="layui-input-block">
+				<button type="button" class="layui-btn" id="sbsf_pic">
+				  <i class="layui-icon">&#xe67c;</i>上传扫描件
+				</button>
+				@if($deviceIdentity['sbsf_pic'])
+				<div class="layui-upload-list">
+				    <img class="layui-upload-img" id="demo1" src="{{ $deviceIdentity['sbsf_pic'] }}">
+  				</div>
+  				@endif
+			</div>
+		</div>
+		<div id="upload_zs"></div>
 		<div class="layui-form-item">
 			<div class="layui-input-block">
 				<button class="layui-btn" type="button" lay-submit lay-filter="editdeviceidentity">立即提交</button>

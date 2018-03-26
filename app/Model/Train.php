@@ -138,6 +138,7 @@ class Train extends Model
         $nation_arr = Cache::remember('nations', 120, function() {
             return DB::table('nations')->select('nation_bh','nation_name')->get()->pluck('nation_name', 'nation_bh')->toArray();
         });
+
         foreach ($bm_user as $k => $v) {
             $v['dwqc'] = $dw_arr[$v['company_dwdm']];
             $v['nsjgmc'] = $bm_arr[$v['mechanism_id']];

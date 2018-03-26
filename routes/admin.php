@@ -298,6 +298,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             Route::get('allassetclaim ', 'AssetClaimController@allAssetClaimList');
             Route::get('allassetclaims', 'AssetClaimController@getAllAssetClaim');
             Route::post('allassetclaim/check', 'AssetClaimController@checkAssetclaim');
+            Route::get('allassetdevice/{id}', 'AssetClaimController@allAssetDeviceList');
+            Route::get('allassetdevices', 'AssetClaimController@getAllAssetDevice');
+            Route::patch('assetdevices/inbound', 'AssetClaimController@backInbound');
             // 设备库存台账统计(资产统计)
             Route::get('assetstatistic', 'AssetClaimController@assetStatisticList');
             Route::get('assetstatistics', 'AssetClaimController@getAssetStatistic');
@@ -307,14 +310,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             Route::get('deviceidentity/{id}/edit', 'AssetClaimController@editDeviceIdentity');
             Route::put('deviceidentity', 'AssetClaimController@editDeviceIdentity');
             Route::post('deviceidentity/bf', 'AssetClaimController@bfDeviceIdentity');
-            // 固定资产管理模块
+            Route::post('deviceidentity/down', 'AssetClaimController@downDeviceIdentity');
+            Route::post('deviceidentity/upload', 'AssetClaimController@uploadDeviceIdentity');
+            // 管理固定资产模块
             Route::get('fixedasset', 'FixedAssetController@fixedAssetList');
             Route::get('fixedassets', 'FixedAssetController@getFixedAsset');
-            Route::get('fixedasset/create', 'FixedAssetController@addFixedAsset');
-            Route::post('fixedasset', 'FixedAssetController@addFixedAsset');
-            Route::get('fixedasset/{id}/edit', 'FixedAssetController@editFixedAsset');
-            Route::put('fixedasset', 'FixedAssetController@editFixedAsset');
-            Route::delete('fixedasset', 'FixedAssetController@delFixedAsset');
         });
         });
     });
@@ -387,7 +387,20 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         Route::get('myassetclaims', 'AssetClaimController@getMyAssetClaim');
         Route::post('myassetclaims/download', 'AssetClaimController@downloadMyAssetClaim');
         // 我申领的资产的设备
-        Route::get('myassetdevice/{id}', 'AssetClaimController@myAssetDeviceList');
+        Route::get('myassetdevice/{id}', 'AssetClaimController@myAssetDeviceList')->middleware('checkifregister');
         Route::get('myassetdevices', 'AssetClaimController@getMyAssetDevice');
+        Route::post('myassetdevice/back', 'AssetClaimController@backMyAssetDevice');
+        Route::post('myassetdevice/download', 'AssetClaimController@downloadMyAssetDevice');
+        // 我的固定资产管理模块
+        Route::get('myfixedasset', 'FixedAssetController@myFixedAssetList')->middleware('checkifregister');
+        Route::get('myfixedassets', 'FixedAssetController@getMyFixedAsset');
+        Route::get('myfixedasset/create', 'FixedAssetController@addMyFixedAsset');
+        Route::post('myfixedasset', 'FixedAssetController@addMyFixedAsset');
+        Route::get('myfixedasset/{id}/edit', 'FixedAssetController@editMyFixedAsset');
+        Route::put('myfixedasset', 'FixedAssetController@editMyFixedAsset');
+        Route::delete('myfixedasset', 'FixedAssetController@delMyFixedAsset');
+        Route::post('myfixedasset/upload', 'FixedAssetController@uploadPic');
+        Route::post('myfixedasset/back', 'FixedAssetController@backMyFixedAsset');
+        Route::get('myfixedasset/look/{id}', 'FixedAssetController@lookMyFixedAsset');
     });
 });

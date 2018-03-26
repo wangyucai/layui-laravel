@@ -26,8 +26,8 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], 
             ,{field: 'sbsf_bz', title: '备注'}
             ,{field: 'bf', title: '报废时间'}
             ,{field: 'if_ck', title: '是否在库',width: 120, templet: '#active'}
-            ,{field: 'if_bf', title: '是否报废', width: 80, templet: '#active1'}
-            ,{title: '操作', width: 160, toolbar: '#op'}
+            ,{field: 'if_bf', title: '是否报废', width: 120, templet: '#active1'}
+            ,{title: '操作', width: 240, toolbar: '#op'}
         ]]
         ,response: {
             statusName: 'code'
@@ -66,6 +66,31 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], 
                         });
                     }
                 });
+            })
+        }else if (layEvent == 'down') {
+            dialog.confirm('确认下载资产报废表吗?', function () {
+                var loadIndex = dialog.load('下载中，请稍候');
+                if(data.sbsf_word_path){
+                    window.location.href = ('/'+data.sbsf_word_path);
+                    dialog.msg('下载成功');
+                }else{
+                    his.ajax({
+                        url: '/admin/deviceidentity/down'
+                        ,type: 'post'
+                        ,data: data
+                        ,complete: function () {
+                            dialog.close(loadIndex);
+                        }
+                        ,error: function (msg) {
+                            dialog.error(msg);
+                        }
+                        ,success: function (data) {
+                            window.location.href = (data);
+                            dialog.msg('下载成功');
+                        }
+                    }); 
+                }
+                
             })
         }
     });

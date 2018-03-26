@@ -44,7 +44,9 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
         var data = obj.data;      //获得当前行数据
         var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
         var tr = obj.tr;          //获得当前行 tr 的DOM对象
-        if(layEvent == 'check') {
+        if (layEvent == 'look') {
+            dialog.open('查看该申领的设备资产', '/admin/allassetdevice/'+data.id);
+        }else if(layEvent == 'check') {
             layer.confirm('是否审核通过？', {
                 btn: ['通过', '不通过']
             }, function(index, layero){

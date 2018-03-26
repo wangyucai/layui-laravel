@@ -100,13 +100,46 @@ class AssetClaimService extends BaseService
     public function editDeviceIdentity(array $data) : bool
     {
         unset($data['sbsf_xh']);
+        unset($data['file']);
         $deviceIdentity = DeviceIdentity::find($data['id']);
         // 手动开启事务
         DB::beginTransaction();
         $deviceIdentity->sbsf_bz        = $data['sbsf_bz'];
+        $deviceIdentity->sbsf_pic       = $data['sbsf_pic'];
         $re = $deviceIdentity->save();
         if ($re === false) {
             $this->error = '修改失败';
+            $this->httpCode = HttpCode::BAD_REQUEST;
+            DB::rollBack();
+            return false;
+        }
+        DB::commit();
+        return true;
+    }
+    /**
+     * 归还我申领的设备反馈信息给本单位管理员
+     * @param $data
+     * @return bool
+     */
+    public function backMyAssetDevice(array $data) : bool
+    {
+        $my_id = Auth::guard('admin')->user()->id;
+        $my_dwdm = Auth::guard('admin')->user()->company_dwdm;
+        $time = \Carbon\Carbon::now()->toDateTimeString();
+        DB::beginTransaction();
+        $has = DB::table('prompt_messages')
+                        ->where([['receiver_id', '=', $data['user_id']],['msg_type', '=', '5'],['type_id', '=', $data['sbsf_id']]])
+                        ->count();
+        $msg_arr = ['receiver_id' => $data['user_id'], 'sender_id' => $my_id, 
+                    'sender_dwdm' => $my_dwdm, 'msg_type' => 5, 
+                    'msg_content' => $data['feedback_msg'], 'type_id' => $data['id'],
+                    'created_at' => $time, 'updated_at' => $time];
+        $re = DB::table('prompt_messages')->insert($msg_arr);
+        if($data['if_back']==1){// 归还成功
+            $re1 = DB::table('user_receive')->where('sbsf_id', $data['sbsf_id'])->update(['if_back' => 1,'back_time'=>time()]);
+        }
+        if ($re === false || $re1 === false) {
+            $this->error = '归还失败';
             $this->httpCode = HttpCode::BAD_REQUEST;
             DB::rollBack();
             return false;

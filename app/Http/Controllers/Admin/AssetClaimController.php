@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Handlers\ImageUploadHandler;
 use App\Common\Enum\HttpCode;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -14,6 +15,7 @@ use App\Model\UserReceive;
 use Auth;
 use App\Service\AssetClaimService;
 use App\Service\InventoryService;
+use Illuminate\Support\Facades\DB;
 
 class AssetClaimController extends Controller
 {
@@ -289,5 +291,102 @@ class AssetClaimController extends Controller
         $data['my_id'] = Auth::guard('admin')->user()->id;
         $res = $userreceive->getMyAssetDevice($data);
         return ajaxSuccess($res['data'], $res['count']);
+    }
+    /**
+     * 归还我申领的设备反馈信息给本单位管理员
+     * @param Request $request
+     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function backMyAssetDevice(Request $request)
+    {      
+        $data = $request->all();
+        $assetClaimService = new AssetClaimService();
+        $re = $assetClaimService->backMyAssetDevice($data);
+        if (!$re) return ajaxError($assetClaimService->getError(), $assetClaimService->getHttpCode());
+        return ajaxSuccess();
+    }
+    /**
+     * 下载资产归还表
+     * @param Request $request
+     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function downloadMyAssetDevice(Request $request, AssetClaim $assetclaim)
+    {      
+        $data = $request->all();
+        $data['my_name'] = Auth::guard('admin')->user()->real_name;
+        $res = $assetclaim->downloadMyAssetDevice($data);
+        return  [
+            'code' => 0,
+            'msg' => $res['all_path'],
+        ];
+    }
+    /**
+     * 管理员获取我申领的资产的设备列表页
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function allAssetDeviceList($id)
+    {
+        return view('admin.assetclaims.allAssetDeviceList',compact('id'));
+    }
+    /**
+     * 管理员获取我申领的资产的设备的分页数据
+     * @param Request $request
+     * @param UserReceive $userreceive
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAllAssetDevice(Request $request, UserReceive $userreceive)
+    {
+        $data = $request->all();
+        $res = $userreceive->getAllAssetDevice($data);
+        return ajaxSuccess($res['data'], $res['count']);
+    }
+    /**
+     * 确认该设备归还入库
+     */
+    public function backInbound(Request $request)
+    {
+        // 更改该设备的出库状态为入库
+        $re = DeviceIdentity::where('sbsf_xh', $request->id)->update(['if_ck' => $request->if_ck]);
+        $re1 = DB::table('user_receive')->where('sbsf_id', $request->id)->update(['if_back_inbound' => 1]);
+        // 获取该资产的总库存量
+        $kc_nums = Inventory::where('kc_zcid', $request->zc_id)->value('kc_nums');
+        ++$kc_nums;
+        // 库存量+1
+        $re = Inventory::where('kc_zcid', $request->zc_id)->update(['kc_nums' => $kc_nums]);
+        if (!$re || !$re1) return ajaxError('修改失败', HttpCode::BAD_REQUEST);
+        return ajaxSuccess();
+    }
+    /**
+     * 下载资产归还表
+     * @param Request $request
+     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function downDeviceIdentity(Request $request, AssetClaim $assetclaim)
+    {      
+        $data = $request->all();
+        // 申请报废日期
+        $data['sqbfrq'] = date('Y-m-d H:i:s',time());
+        // 申请报废人
+        $data['sqbfr'] = Auth::guard('admin')->user()->real_name;
+        $res = $assetclaim->downDeviceIdentity($data);
+        return  [
+            'code' => 0,
+            'msg' => $res['all_path'],
+        ];
+    }
+    
+    // 上传扫描件
+    public function uploadDeviceIdentity(Request $request,ImageUploadHandler $uploader)
+    {
+        $uid = $user = Auth::guard('admin')->user()->id;
+        if ($request->file) {
+            $result = $uploader->save($request->file, 'DeviceIdentity', $uid, 362);
+            if ($result) {
+                return [
+                    'status' => 1,
+                    'sbsf_pic' => $result['path'],
+                ];
+            }
+        }
     }
 }

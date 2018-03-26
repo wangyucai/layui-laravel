@@ -29,6 +29,10 @@
 		@{{# } }}
 	</script>
 	<script type="text/html" id="op">
+		<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="look">
+			<i class="layui-icon">&#xe623;</i>
+			查看领用的设备
+		</a>
 		@{{# if(d.if_check == 0){ }}
 		<a class="layui-btn layui-btn-xs layui-bg-red check" lay-event="check">
 			<i class="layui-icon">&#xe623;</i>

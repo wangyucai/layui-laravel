@@ -29,7 +29,7 @@ class DeviceIdentity extends Model
                                  ->where($where2)
                                  ->leftJoin('inventories', 'inventories.id', '=', 'device_identities.sbsf_kcid')
                                  ->leftJoin('equipment_assets', 'inventories.kc_zcid', '=', 'equipment_assets.id')
-                                 ->select('device_identities.*', 'equipment_assets.bfnx','inventories.kc_rkrq')
+                                 ->select('device_identities.*', 'equipment_assets.bfnx','equipment_assets.zcmc','equipment_assets.zcpp','equipment_assets.zcxh','inventories.kc_rkrq')
         						 ->offset($offset)
                                  ->limit($limit)
                                  ->orderBy($sortfield, $order)

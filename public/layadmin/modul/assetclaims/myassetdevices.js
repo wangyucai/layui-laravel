@@ -39,18 +39,45 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
         var data = obj.data;      //获得当前行数据
         var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
         var tr = obj.tr;          //获得当前行 tr 的DOM对象
-        console.log(data);
-        if (layEvent == 'look') {
-            dialog.open('查看我申领的设备资产', '/admin/myassetdevice/'+data.id);
+        if (layEvent == 'back') {         
+            var newStatus = (data.if_back == 1) ? 0 : 1;
+            layer.confirm('是否归还？', {
+                btn: ['归还', '不归还']
+            }, function(index, layero){
+                var feedback_msg = '';
+                layer.prompt({
+                    formType: 2,
+                    title: '请输入归还原因',
+                    area: ['300px', '120px'] 
+                }, function(value, index, elem){
+                    data['feedback_msg'] = value; // 反馈信息
+                    data['if_back'] = newStatus;//归还
+                    his.ajax({
+                        url: '/admin/myassetdevice/back'
+                        ,type: 'post'
+                        ,data: data
+                        ,error: function (msg) {
+                            dialog.error(msg);
+                        }
+                        ,success: function () {
+                            dialog.msg('归还成功');
+                            obj.update({
+                                if_back: 1
+                            });
+                        }
+                    });
+                    layer.close(index);
+                }); 
+            });     
         }else if (layEvent == 'down') {
-            dialog.confirm('确认下载资产申领表吗?', function () {
+            dialog.confirm('确认下载资产归还表吗?', function () {
                 var loadIndex = dialog.load('下载中，请稍候');
                 if(data.word_path){
                     window.location.href = ('/'+data.word_path);
                     dialog.msg('下载成功');
                 }else{
                     his.ajax({
-                        url: '/admin/myassetclaims/download'
+                        url: '/admin/myassetdevice/download'
                         ,type: 'post'
                         ,data: data
                         ,complete: function () {
@@ -67,7 +94,7 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
                 }
                 
             })
-        }
+        }      
     });
 
     function flushTable (cond, sortObj) {
