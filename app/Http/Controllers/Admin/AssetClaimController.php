@@ -12,6 +12,7 @@ use App\Model\Inventory;
 use App\Model\DeviceIdentity;
 use App\Model\Warehouse;
 use App\Model\UserReceive;
+use App\Model\Company;
 use Auth;
 use App\Service\AssetClaimService;
 use App\Service\InventoryService;
@@ -150,9 +151,10 @@ class AssetClaimController extends Controller
      */
     public function getAllAssetClaim(Request $request, AssetClaim $assetclaim)
     {
+        // 只统计本单位的
         $data = $request->all();
         $data['my_dwdm'] = Auth::guard('admin')->user()->company_dwdm;
-       	$data['my_bmdm'] = Auth::guard('admin')->user()->mechanism_code;
+       	// $data['my_bmdm'] = Auth::guard('admin')->user()->mechanism_code;
         $res = $assetclaim->getAllAssetClaim($data);
         return ajaxSuccess($res['data'], $res['count']);
     }
@@ -202,7 +204,20 @@ class AssetClaimController extends Controller
      */
     public function InboundAssetList()
     {
-        return view('admin.assetclaims.InboundAssetList');
+        // 获取我的用户单位级别
+        $my_dwjb = Auth::guard('admin')->user()->dwjb;
+        $my_dwdm = Auth::guard('admin')->user()->company_dwdm;
+        // 单位
+        if($my_dwjb==2){
+            $companies = Company::where('dwdm','!=','100000')->get();
+            $danwei = select_company('sjdm', 'dwdm', $companies, '100000', '=', '1');
+        }elseif($my_dwjb==3){
+            $companies = Company::where('dwdm',$my_dwdm)->orwhere('sjdm',$my_dwdm)->get();
+            $danwei = select_company('sjdm', 'dwdm', $companies, '520000', '=', '1');
+        }else{
+            $danwei = Company::where('dwdm',$my_dwdm)->get();
+        }  
+        return view('admin.assetclaims.InboundAssetList',compact('my_dwdm','danwei','my_dwjb'));
     }
     /**
      * 获取入库资产的分页数据

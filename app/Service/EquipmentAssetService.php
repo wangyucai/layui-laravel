@@ -100,6 +100,7 @@ class EquipmentAssetService extends BaseService
     public function addInbound(array $data) : bool
     {
         $data['kc_rkrq'] = strtotime($data['kc_rkrq']);
+        $data['kc_ynums'] = $data['kc_nums'];
         $has = Inventory::where('kc_zcid', $data['kc_zcid'])->count();
         if ($has > 0) {
             $this->error = '该装备资产已入库,不需要在进行此操作';

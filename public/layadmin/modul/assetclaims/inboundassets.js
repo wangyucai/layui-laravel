@@ -4,7 +4,16 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
         ,dialog = layui.dialog
         ,his = layui.his
         ,$ = layui.$;
-
+    // 日期插件
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#rkrq_start'
+        });
+        laydate.render({
+            elem: '#rkrq_end'
+        });
+    });
     table.render({
         elem: '#inboundassets'
         ,url: '/admin/inboundassets' //数据接口
@@ -18,15 +27,17 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
         }    
         ,cols: [[ //表头
             {field: 'id', title: 'ID', width:80, sort: true, fixed: 'left', align: 'left'}
-            ,{field: 'kc_name', title: '经手人'}
+            ,{field: 'kc_username', title: '经手人'}
             ,{field: 'zcmc', title: '资产名称'}
             ,{field: 'zcpp', title: '资产品牌'}
             ,{field: 'zcxh', title: '资产型号'}
             ,{field: 'kc_rkrq', title: '入库日期'}
-            ,{field: 'kc_nums', title: '库存数量'}
+            ,{field: 'kc_ynums', title: '库存数量'}
+            ,{field: 'kc_nums', title: '剩余库存'}
+            ,{field: 'bf_nums', title: '报废数量'}
             ,{field: 'kc_qryj', title: '取入依据'}
             ,{field: 'if_check', title: '是否审核',width: 100, templet: '#active'}
-            ,{title: '操作', width: 320, toolbar: '#op'}
+            ,{title: '操作', width: 240, toolbar: '#op'}
         ]]
         ,response: {
             statusName: 'code'
@@ -120,10 +131,17 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
         }
     });
 
-    function flushTable (cond, sortObj) {
+    function flushTable (rkrq_start, rkrq_end, jsr, zcmc,danwei,my_dwjb,province_level,if_check, sortObj) {
         var query = {
             where: {
-                cond: cond
+                rkrq_start: rkrq_start,
+                rkrq_end: rkrq_end,
+                jsr: jsr,
+                zcmc: zcmc,    
+                danwei: danwei,
+                my_dwjb: my_dwjb,
+                province_level: province_level,
+                if_check: if_check,
             }
             ,page: {
                 curr: 1
@@ -139,13 +157,37 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
 
     // 搜索
     $('.search_btn').click(function () {
-        var cond = $('.search_input').val();
-        flushTable(cond);
+        var rkrq_start = $('#rkrq_start').val();
+        var rkrq_end = $('#rkrq_end').val();
+        var jsr = $('#jsr').val();
+        var zcmc = $('#zcmc').val();
+        var danwei                       = $('#danwei').val();
+        var my_dwjb = $('#my_dwjb:checked').val();
+        my_dwjb = my_dwjb ? my_dwjb : 0;
+        if(my_dwjb==2 && !danwei){
+            layer.msg('请选择单位后,再选择包含下辖单位查询！！');
+            return false;
+        } 
+        if(my_dwjb==4 && !danwei){
+            layer.msg('县级没有下辖单位,请勿勾选！！');
+            return false;
+        }  
+        var province_level = $('#province_level').val();
+        var if_check = $('#if_check').val();
+        flushTable(rkrq_start, rkrq_end, jsr, zcmc,danwei,my_dwjb,province_level,if_check);
     });
 
     // 排序
     table.on('sort(inboundassettab)', function (obj) {
-        var cond = $('.search_input').val();
-        flushTable(cond, obj);
+        var rkrq_start = $('#rkrq_start').val();
+        var rkrq_end = $('#rkrq_end').val();
+        var jsr = $('#jsr').val();
+        var zcmc = $('#zcmc').val();
+        var danwei = $('#danwei').val();
+        var my_dwjb = $('#my_dwjb:checked').val();
+        my_dwjb = my_dwjb ? my_dwjb : 0;
+        var province_level = $('#province_level').val();
+        var if_check = $('#if_check').val();
+        flushTable(rkrq_start, rkrq_end, jsr, zcmc,danwei,my_dwjb,province_level,if_check, obj);
     });
 });

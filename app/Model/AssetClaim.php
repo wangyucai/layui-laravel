@@ -17,12 +17,29 @@ class AssetClaim extends Model
     {
         $page = $param['page'];
         $limit = $param['limit'];
-        $where = $param['cond'] ?? [];
+        $where = $param['zcmc'] ?? [];
+        $where3 = $param['zcbh'] ?? [];
         $sortfield = $param['sortField'] ?? 'id';
         $order = $param['order'] ?? 'asc';
         if ($where) $where = [['equipment_assets.zcmc', 'like', $where.'%']];
+        if(isset($param['lqrq_start'])){
+            $where1 = strtotime($param['lqrq_start']);
+        }else{
+            $where1 = [];
+        }
+        if(isset($param['lqrq_end'])){
+            $where2 = strtotime($param['lqrq_end']);
+        }else{
+            $where2 = [];
+        }
+        if ($where3) $where3 = [['equipment_assets.zcbh', 'like', $where3.'%']];
         $offset = ($page - 1) * $limit;
+        if ($where1) $where1 = [['asset_claims.lyrq', '>=', $where1]]; 
+        if ($where1 && $where2) $where2 = [['asset_claims.lyrq', '<=', $where2]]; 
         $myAssetClaims = $this ->where($where)
+                                 ->where($where1)
+                                 ->where($where2)
+                                 ->where($where3)
                                  ->where('asset_claims.ly_uid',$param['my_id'])
                                  ->leftJoin('equipment_assets', 'asset_claims.ly_zcid', '=', 'equipment_assets.id')
                                  ->select('equipment_assets.*', 'asset_claims.ly_uid','asset_claims.ly_nums', 'asset_claims.ly_gsml','asset_claims.ly_zcyt','asset_claims.lyrq','asset_claims.created_at','asset_claims.if_check','asset_claims.word_path')
@@ -34,9 +51,13 @@ class AssetClaim extends Model
         $gsml_arr = gsml();                       
         foreach ($myAssetClaims as $k => $v) {
             $v->ly_gsml = $gsml_arr[$v->ly_gsml];
+            $v->zcbh = "GZJCYJSC+".$v->zcbh;
         }
         $myAssetClaims= $myAssetClaims->toArray();
         $count = $this->where($where)
+                      ->where($where1)
+                     ->where($where2)
+                     ->where($where3)
                      ->where('asset_claims.ly_uid',$param['my_id'])
                      ->leftJoin('equipment_assets', 'asset_claims.ly_zcid', '=', 'equipment_assets.id')->count();
         return [
@@ -52,14 +73,31 @@ class AssetClaim extends Model
     {
         $page = $param['page'];
         $limit = $param['limit'];
-        $where = $param['cond'] ?? [];
+        $where = $param['zcmc'] ?? [];
+        $where3 = $param['slr'] ?? [];
         $sortfield = $param['sortField'] ?? 'id';
         $order = $param['order'] ?? 'asc';
         if ($where) $where = [['equipment_assets.zcmc', 'like', $where.'%']];
+        if(isset($param['lqrq_start'])){
+            $where1 = strtotime($param['lqrq_start']);
+        }else{
+            $where1 = [];
+        }
+        if(isset($param['lqrq_end'])){
+            $where2 = strtotime($param['lqrq_end']);
+        }else{
+            $where2 = [];
+        }
+        if ($where3) $where3 = [['admins.real_name', 'like', $where3.'%']];
         $offset = ($page - 1) * $limit;
+        if ($where1) $where1 = [['asset_claims.lyrq', '>=', $where1]]; 
+        if ($where1 && $where2) $where2 = [['asset_claims.lyrq', '<=', $where2]]; 
         $allAssetClaims = EquipmentAsset::where($where)
                                  ->where('asset_claims.ly_dwdm',$param['my_dwdm'])
-                                 ->where('asset_claims.ly_bmdm',$param['my_bmdm'])
+                                 ->where($where1)
+                                 ->where($where2)
+                                 ->where($where3)
+                                 // ->where('asset_claims.ly_bmdm',$param['my_bmdm'])
                                  ->leftJoin('asset_claims', 'asset_claims.ly_zcid', '=', 'equipment_assets.id')
                                  ->leftJoin('admins', 'asset_claims.ly_uid', '=', 'admins.id')
                                  ->select('equipment_assets.*', 'asset_claims.ly_uid','asset_claims.ly_zcid','asset_claims.ly_nums', 'asset_claims.ly_gsml','asset_claims.ly_zcyt','asset_claims.lyrq','asset_claims.created_at','asset_claims.if_check','admins.real_name')
@@ -71,11 +109,18 @@ class AssetClaim extends Model
         $gsml_arr = gsml();                       
         foreach ($allAssetClaims as $k => $v) {
             $v->ly_gsml = $gsml_arr[$v->ly_gsml];
+            $v->lyrq = date('Y-m-d', $v->lyrq);
         }
         $allAssetClaims= $allAssetClaims->toArray();
-        $count = $this->where($where)
-                     ->where('asset_claims.ly_dwdm',$param['my_dwdm'])
-                     ->where('asset_claims.ly_bmdm',$param['my_bmdm'])->leftJoin('equipment_assets', 'asset_claims.ly_zcid', '=', 'equipment_assets.id')->count();
+        $count = EquipmentAsset::where($where)
+                                 ->where('asset_claims.ly_dwdm',$param['my_dwdm'])
+                                 ->where($where1)
+                                 ->where($where2)
+                                 ->where($where3)
+                                 // ->where('asset_claims.ly_bmdm',$param['my_bmdm'])
+                                 ->leftJoin('asset_claims', 'asset_claims.ly_zcid', '=', 'equipment_assets.id')
+                                 ->leftJoin('admins', 'asset_claims.ly_uid', '=', 'admins.id')
+                                 ->count();
         return [
             'count' => $count,
             'data' => $allAssetClaims

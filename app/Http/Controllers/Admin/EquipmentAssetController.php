@@ -123,6 +123,7 @@ class EquipmentAssetController extends Controller
             ]);
             $data = $request->all();
             $data['kc_uid'] = Auth::guard('admin')->user()->id;
+            $data['kc_username'] = Auth::guard('admin')->user()->real_name;
             $data['kc_dwdm'] = Auth::guard('admin')->user()->company_dwdm;
             $data['kc_bmdm'] = Auth::guard('admin')->user()->mechanism_code;
             $equipmentAssetService = new EquipmentAssetService();

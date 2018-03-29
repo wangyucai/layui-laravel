@@ -21,7 +21,7 @@ class CreateLogsTable extends Migration
             $table->string('method',30)->comment('方法名');
             $table->string('routes',100)->comment('路由地址');
             $table->string('record',100)->comment('操作记录');
-            $table->string('ip',100)->comment('操作记录');
+            $table->string('ip',100)->comment('ip');
             $table->timestamps();
         });
     }

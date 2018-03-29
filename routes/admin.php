@@ -301,9 +301,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             Route::get('allassetdevice/{id}', 'AssetClaimController@allAssetDeviceList');
             Route::get('allassetdevices', 'AssetClaimController@getAllAssetDevice');
             Route::patch('assetdevices/inbound', 'AssetClaimController@backInbound');
-            // 设备库存台账统计(资产统计)
-            Route::get('assetstatistic', 'AssetClaimController@assetStatisticList');
-            Route::get('assetstatistics', 'AssetClaimController@getAssetStatistic');
+           
             // 设备身份管理
             Route::get('deviceidentity/{id}', 'AssetClaimController@deviceIdentityList');
             Route::get('deviceidentities', 'AssetClaimController@getDeviceIdentity');

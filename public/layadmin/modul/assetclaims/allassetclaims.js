@@ -4,7 +4,16 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
         ,dialog = layui.dialog
         ,his = layui.his
         ,$ = layui.$;
-
+    // 日期插件
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#lqrq_start'
+        });
+        laydate.render({
+            elem: '#lqrq_end'
+        });
+    });
     table.render({
         elem: '#myassetclaims'
         ,url: '/admin/allassetclaims' //数据接口
@@ -100,10 +109,13 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
         }
     });
 
-    function flushTable (cond, sortObj) {
+    function flushTable (lqrq_start, lqrq_end, slr, zcmc, sortObj) {
         var query = {
             where: {
-                cond: cond
+                lqrq_start: lqrq_start,
+                lqrq_end: lqrq_end,
+                slr: slr,
+                zcmc: zcmc,
             }
             ,page: {
                 curr: 1
@@ -119,13 +131,19 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
 
     // 搜索
     $('.search_btn').click(function () {
-        var cond = $('.search_input').val();
-        flushTable(cond);
+        var lqrq_start = $('#lqrq_start').val();
+        var lqrq_end = $('#lqrq_end').val();
+        var slr = $('#slr').val();
+        var zcmc = $('#zcmc').val();
+        flushTable(lqrq_start, lqrq_end, slr, zcmc);
     });
 
     // 排序
     table.on('sort(myassetclaimtab)', function (obj) {
-        var cond = $('.search_input').val();
-        flushTable(cond, obj);
+        var lqrq_start = $('#lqrq_start').val();
+        var lqrq_end = $('#lqrq_end').val();
+        var slr = $('#slr').val();
+        var zcmc = $('#zcmc').val();
+        flushTable(lqrq_start, lqrq_end, slr, zcmc, obj);
     });
 });

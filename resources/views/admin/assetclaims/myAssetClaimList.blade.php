@@ -3,8 +3,20 @@
 @section("content")
 	<blockquote class="layui-elem-quote news_search">
 		<div class="layui-inline">
+			<div class="layui-input-inline">
+				<div class="layui-input-inline">
+					<input type="text" id="lqrq_start" class="layui-input" name="gdzc_lqrq" placeholder="选择开始日期">	
+				</div>
+				--
+				<div class="layui-input-inline">
+					<input type="text" id="lqrq_end" class="layui-input" name="gdzc_lqrq" placeholder="选择结束日期">
+				</div>
+		    </div>
 		    <div class="layui-input-inline">
-		    	<input type="text" value="" placeholder="资产名称" class="layui-input search_input">
+		    	<input type="text" value="" placeholder="资产编号" class="layui-input zcbh" id="zcbh">
+		    </div>
+		    <div class="layui-input-inline">
+		    	<input type="text" value="" placeholder="资产名称" class="layui-input zcmc" id="zcmc">
 		    </div>
 		    <a class="layui-btn search_btn">查询</a>
 		</div>
