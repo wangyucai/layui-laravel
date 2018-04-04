@@ -294,49 +294,16 @@ class RegisterController extends Controller
         $next_companies = Company::where('sjdm',$data['company_dwdm'])->select('dwdm')->get()->toArray();
         $data['next_companies_dwdm'] = $next_companies;
         $res = $admin->exportCompleteInfoUser($data);
-        // 导出结果
-        // $exportResult = $res['data'];
-        // // print_r($exportResult);die();
-        // //通过查询得到数据
-        // $title = [[ 0 => '姓名', 1 => '性别', 2 => '民族']]; 
-        // $export = null; 
-        // foreach ($exportResult as $key => $val) {
-        //     $export[$key][0] = $val['real_name']; 
-        //     $export[$key][1] = $val['sex']; 
-        //     $export[$key][2] = $val['nation']; 
-        //     // $export[$key][3] = $val->birth; 
-        //     // $export[$key][4] = $val->native_place; 
-        //     // $export[$key][5] = $val->native_heath; 
-        //     // $export[$key][6] = $val->tel; 
-        //     // $export[$key][7] = $val->dwqc; 
-        //     // $export[$key][8] = $val->nsjgmc; 
-        //     // $export[$key][9] = $val->tel_hm; 
-        //     // $export[$key][10] = $val->political_outlook; 
-        // } 
-        // $cellData = array_merge($title,$export); 
-        // print_r($cellData);die();
-        $cellData = [
-                ['学号','姓名','成绩'],
-                ['10001','AAAAA','99'],
-                ['10001','AAAAA','99'],
-                ['10001','AAAAA','99'],
-                ['10001','AAAAA','99'],
+        return  [
+            'code' => 0,
+            'msg' => $res['url'],
         ];
-        $new_file_name = '完善信息用户列表_'.date('Y-m-d H:i:s');
-        Excel::create($new_file_name,function($excel) use ($cellData) {
-            $excel->sheet('完善信息用户列表', function($sheet) use ($cellData) {
-                $sheet->rows($cellData); 
-            }); 
-        })->store('xls',public_path('uploads/excel/exports')); 
-        $res['url'] = route('download',['file'=>$new_file_name]);
-        return ajaxSuccess($res['url']);
     }
     /**
      * 下载导出excel的路由
      */
-    public function downloadExcel($file_name)
-    {
-        $file =  public_path('uploads\excel\exports\\'.$file_name.'.xls');
+    public function downloadExcel ($file_name) {
+        $file = public_path('phpexcel\\'.$file_name.'.xls');
         return response()->download($file);
     }
     /**
@@ -433,6 +400,21 @@ class RegisterController extends Controller
             $technician_title = technician_title();
             return view('admin.register.editMyInfo', compact('admin','nations','political_outlook','education','academic_degree','procurator','administrative_duties','administrative_level','technician_title'));
         }
+    }
+    /**
+     * 下载简历
+     * @param Request $request
+     * @param EquipmentAsset $equipmentasset
+     * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function downResume(Request $request, Admin $admin)
+    {      
+        $data = $request->all();
+        $res = $admin->downResume($data);
+        return  [
+            'code' => 0,
+            'msg' => $res['all_path'],
+        ];
     }
 }
     

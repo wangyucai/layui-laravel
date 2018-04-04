@@ -4,6 +4,8 @@ namespace App\Model;
 
 use Illuminate\Foundation\Auth\User;
 use Auth;
+use Excel;
+use Illuminate\Support\Facades\Cache;
 
 class Admin extends User
 {
@@ -315,9 +317,53 @@ class Admin extends User
                         ->get()
                         ->toArray();
         $count = $count->count();
+        // 导出结果
+        $exportResult = $admins;
+         // 获取民族的数组
+        $nation = Cache::remember('nations', 120, function() {
+            return DB::table('nations')->select('nation_bh','nation_name')->get()->pluck('nation_name', 'nation_bh')->toArray();
+        });
+        $political_outlook = political_outlook();
+        $education = education();
+        $academic_degree = academic_degree();
+        $procurator = procurator();
+        $administrative_level = administrative_level();
+        $technician_title = technician_title();
+        //通过查询得到数据
+        $title = [[ 0 => '姓名', 1 => '性别', 2 => '民族',3 => '单位', 4 => '部门', 5 => '手机全号',
+                    6 => '政治面貌',7 => '参加工作时间', 8 => '进入检察院工作时间', 9 => '是否在岗',
+                    10 => '学历',11 => '学位', 12 => '检察官员额', 13 => '行政级别',14 => '专业技师职称',
+                ]]; 
+        $export = null; 
+        foreach ($exportResult as $key => $val) {
+            $export[$key][0] = $val['real_name']; 
+            $export[$key][1] = $val['sex']; 
+            $export[$key][2] = $nation[$val['nation']]; 
+            $export[$key][3] = $val['dwqc']; 
+            $export[$key][4] = $val['nsjgmc']; 
+            $export[$key][5] = $val['tel']; 
+            $export[$key][6] = $political_outlook[$val['political_outlook']]; 
+            $export[$key][7] = date('Y-m-d',$val['join_work_time']); 
+            $export[$key][8] = date('Y-m-d',$val['join_procuratorate_time']); 
+            $export[$key][9] = $val['if_work']; 
+            $export[$key][10] = $education[$val['education']]; 
+            $export[$key][11] = $academic_degree[$val['academic_degree']]; 
+            $export[$key][12] = $procurator[$val['procurator']]; 
+            $export[$key][13] = $administrative_level[$val['administrative_level']]; 
+            $export[$key][14] = $technician_title[$val['technician_title']]; 
+        } 
+        $cellData = array_merge($title,$export); 
+
+        $new_file_name = 'userinfo';
+        
+        Excel::create($new_file_name,function($excel) use ($cellData) {
+            $excel->sheet('Sheetname', function($sheet) use ($cellData) {
+                $sheet->rows($cellData); 
+            }); 
+        })->store('xls',public_path('phpexcel')); 
+        $url = '/phpexcel/'.$new_file_name.'.xls';
         return [
-            'count' => $count,
-            'data' => $admins
+            'url' => $url,
         ];
 
     }
@@ -453,4 +499,48 @@ class Admin extends User
       return $this->trains()->detach($train);
     }
 
+    /**
+     * 下载资产申领表
+     * @return array
+     */
+    public function downResume(array $data) : array
+    {
+        $phpWord = new \PhpOffice\PhpWord\TemplateProcessor('phpword/resume/简历格式.docx');
+         //基础信息填写替换
+        $phpWord->setValue('real_name', $data['real_name']);
+        $phpWord->setValue('sex', $data['sex']);
+        $phpWord->setValue('birth', $data['birth']);
+        $phpWord->setValue('nation', $data['nation']);
+        $phpWord->setValue('native_place', $data['native_place']);
+        $phpWord->setValue('native_heath', $data['native_heath']);
+        $phpWord->setValue('political_outlook', $data['political_outlook']);
+        $phpWord->setValue('join_party_time', $data['join_party_time']);
+        $phpWord->setValue('join_work_time', $data['join_work_time']);
+        $phpWord->setValue('id_number', $data['id_number']);
+        $phpWord->setValue('join_procuratorate_time', $data['join_procuratorate_time']);
+        $phpWord->setValue('join_technical_department_time', $data['join_technical_department_time']);
+        $phpWord->setValue('education', $data['education']);
+        $phpWord->setValue('academic_degree', $data['academic_degree']);
+        $phpWord->setValue('major_school', $data['major_school']);
+        $phpWord->setValue('major_degree_school', $data['major_degree_school']);
+        $phpWord->setValue('get_education_time', $data['get_education_time']);
+        $phpWord->setValue('get_academic_degree_time', $data['get_academic_degree_time']);
+        $phpWord->setValue('procurator', $data['procurator']);
+        $phpWord->setValue('administrative_duties', $data['administrative_duties']);
+        $phpWord->setValue('administrative_level', $data['administrative_level']);
+        $phpWord->setValue('technician_title', $data['technician_title']);
+        $phpWord->setValue('resume', $data['resume']);
+        //生成的文档为Word2007
+        // $writer = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $path = 'phpword/resume/我的简历_'.$data['real_name'].'.docx';
+        // $writer->save($path);
+        $phpWord->saveAs($path);
+        // 把下载地址存到数据库里
+        $this->where('real_name', $data['real_name'])->update(['word_path' => $path]);
+
+        $all_path = asset($path); 
+        return [
+            'all_path' => $all_path,
+        ];
+    }
 }

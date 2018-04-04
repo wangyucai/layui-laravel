@@ -27,6 +27,7 @@
             <div class="code"><img id="captcha" src="{{url('/admin/captcha')}}" width="116" height="36"></div>
         </div> --}}
         <div class="layui-form-item remember_me">
+            <button type="button" class="layui-btn register" lay-submit lay-filter="register">注册</button>
             <label class="layui-form-label">记住我</label>
             <div class="layui-input-block">
                 <input type="checkbox" name="remember" lay-skin="switch">
@@ -34,6 +35,7 @@
         </div>
         {{ csrf_field() }}
         <button type="button" class="layui-btn login_btn" lay-submit lay-filter="login">登录</button>
+
     </form>
 </div>
 <script type="text/javascript" src="/layadmin/layui/layui.js"></script>

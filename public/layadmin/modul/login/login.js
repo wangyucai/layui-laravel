@@ -31,4 +31,9 @@ layui.config({base: '/layadmin/modul/common/'}).use(['form', 'dialog', 'his'],fu
         });
         return false;
     })
+    // 注册按钮
+    $('.register').click(function(){
+        var path = '/admin/register';
+        window.location.href = (path);
+    });
 })

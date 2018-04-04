@@ -25,7 +25,7 @@ class NoticeService extends BaseService
         unset($data['file']);
         unset($data['token']);
         DB::beginTransaction();
-        if($data['px_id']){
+        if(isset($data['px_id'])){
             Train::where('id', $data['px_id'])->update(['if_notice' => 1]);
         }
         $notice = Notice::create($data);

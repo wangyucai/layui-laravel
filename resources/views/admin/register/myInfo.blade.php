@@ -1,6 +1,13 @@
 @extends("admin.layout.main")
 
 @section("content")
+<blockquote class="layui-elem-quote news_search">
+	<div class="layui-inline">		
+    	<div class="layui-inline" style="margin-left: 10px;">
+    		<a id="down_resume" class="layui-btn" style="height: 32px;line-height: 32px;">下载简历</a>
+    	</div> 			  
+	</div>
+</blockquote>
 	<form class="layui-form layui-form-pane" >
 	<input type="hidden" name="uid" value="{{ $admin['id'] }}">
 	<div class="layui-form-item">
@@ -13,8 +20,8 @@
 		<div class="layui-inline">
 		    <label class="layui-form-label">性别</label>
 		    <div class="layui-input-block userSex">
-		      	<input type="radio" name="sex" value="男" title="男" @if($admin['sex']=='男') checked @endif>
-		      	<input type="radio" name="sex" value="女" title="女" @if($admin['sex']=='女') checked @endif>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		      	<input  type="radio" name="sex" value="男" title="男" @if($admin['sex']=='男') checked class="sex" @endif>
+		      	<input  type="radio" name="sex" value="女" title="女" @if($admin['sex']=='女') checked class="sex" @endif>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		    </div>
 	    </div>
 		<div class="layui-inline">		
@@ -28,7 +35,7 @@
 		<div class="layui-inline">
 			<label class="layui-form-label">民族</label>
 			<div class="layui-input-inline">
-				<input type="text" class="layui-input birth" lay-verify="required" name="nation" value="{{ $nation }}" disabled>
+				<input type="text" class="layui-input nation" lay-verify="required" name="nation" value="{{ $nation }}" disabled>
 			</div>
 		</div>
 		<div class="layui-inline">		
@@ -48,7 +55,7 @@
 		<div class="layui-inline">
 			<label class="layui-form-label">政治面貌</label>
 			<div class="layui-input-inline">
-				<input type="text" class="layui-input" lay-verify="required" name="political_outlook" value="{{ $political_outlook[$admin['political_outlook']] }}" disabled>
+				<input type="text" class="layui-input political_outlook" lay-verify="required" name="political_outlook" value="{{ $political_outlook[$admin['political_outlook']] }}" disabled>
 			</div>
 		</div>
 		<div class="layui-inline">		
@@ -89,20 +96,20 @@
 		<div class="layui-inline">
 		    <label class="layui-form-label">是否在岗</label>
 		    <div class="layui-input-block if_work">
-		      	<input type="radio" name="if_work" value="1" title="是" @if($admin['if_work']=='1') checked @endif>
-		      	<input type="radio" name="if_work" value="2" title="否" @if($admin['if_work']=='2') checked @endif>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		      	<input type="radio" name="if_work" value="1" title="是" @if($admin['if_work']=='1') checked class="if_work" @endif>
+		      	<input type="radio" name="if_work" value="2" title="否" @if($admin['if_work']=='2') checked class="if_work" @endif>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		    </div>
 	    </div>
 	    <div class="layui-inline">
 			<label class="layui-form-label">学历</label>
 			<div class="layui-input-inline">
-				<input type="text" class="layui-input" lay-verify="required" name="education" value="{{ $education[$admin['education']] }}" disabled>
+				<input type="text" class="layui-input education" lay-verify="required" name="education" value="{{ $education[$admin['education']] }}" disabled>
 			</div>
 		</div>
 		<div class="layui-inline">
 			<label class="layui-form-label">学位</label>
 			<div class="layui-input-inline">
-				<input type="text" class="layui-input" lay-verify="required" name="academic_degree" value="{{ $academic_degree[$admin['academic_degree']] }}" disabled>
+				<input type="text" class="layui-input academic_degree" lay-verify="required" name="academic_degree" value="{{ $academic_degree[$admin['academic_degree']] }}" disabled>
 			</div>
 		</div>
 	</div>
@@ -136,13 +143,13 @@
 		<div class="layui-inline">
 			<label class="layui-form-label">检察官员额</label>
 			<div class="layui-input-inline">
-				<input type="text" class="layui-input" lay-verify="required" name="procurator" value="{{ $procurator[$admin['procurator']] }}" disabled>
+				<input type="text" class="layui-input procurator" lay-verify="required" name="procurator" value="{{ $procurator[$admin['procurator']] }}" disabled>
 			</div>
 		</div>
 		<div class="layui-inline">
 			<label class="layui-form-label">行政职务</label>
 			<div class="layui-input-inline">
-				<input type="text" class="layui-input" lay-verify="required" name="administrative_duties" value="{{ $administrative_duties[$admin['administrative_duties']] }}" disabled>
+				<input type="text" class="layui-input administrative_duties" lay-verify="required" name="administrative_duties" value="{{ $administrative_duties[$admin['administrative_duties']] }}" disabled>
 			</div>
 		</div>
 	</div>
@@ -150,13 +157,13 @@
 		<div class="layui-inline">
 			<label class="layui-form-label">行政级别</label>
 			<div class="layui-input-inline">
-				<input type="text" class="layui-input" lay-verify="required" name="administrative_level" value="{{ $administrative_level[$admin['administrative_level']] }}" disabled>
+				<input type="text" class="layui-input administrative_level" lay-verify="required" name="administrative_level" value="{{ $administrative_level[$admin['administrative_level']] }}" disabled>
 			</div>
 		</div>
 		<div class="layui-inline">
 			<label class="layui-form-label" title="专业技师职称">专业技师职称</label>
 			<div class="layui-input-inline">
-				<input type="text" class="layui-input" lay-verify="required" name="technician_title" value="{{ $technician_title[$admin['technician_title']] }}" disabled>
+				<input type="text" class="layui-input technician_title" lay-verify="required" name="technician_title" value="{{ $technician_title[$admin['technician_title']] }}" disabled>
 			</div>
 		</div>
 	</div>
@@ -169,11 +176,11 @@
 	<div class="layui-form-item">
 		<label class="layui-form-label">简历</label>
 		<div class="layui-input-block">
-			<textarea placeholder="请输入简历" class="layui-textarea" name="resume">{{ $admin['resume'] }}</textarea>
+			<textarea placeholder="请输入简历" class="layui-textarea resume" name="resume">{{ $admin['resume'] }}</textarea>
 		</div>
 	</div>	
 	</form>
 @endsection
 @section("js")
-	<script type="text/javascript" src="/layadmin/modul/register/editCompleteInfoUser.js"></script>
+	<script type="text/javascript" src="/layadmin/modul/register/downresume.js"></script>
 @endsection

@@ -253,10 +253,11 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table', 'dialog', 'his'], 
                     ,error: function (msg) {
                         dialog.error(msg);
                     }
-                    ,success: function () {
+                    ,success: function (data) {
+                        window.location.href = (data);
                         dialog.msg('导出成功');
                     }
-                });
+                }); 
             }) 
 
     });

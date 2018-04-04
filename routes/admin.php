@@ -29,6 +29,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         // 编辑我已完善的人事信息
         Route::get('completeinfouser/edit', 'Registercontroller@editMyInfo');
         Route::put('completeinfouser/edit', 'Registercontroller@editMyInfo');
+        // 下载我的简历
+        Route::post('completeinfouser/down', 'Registercontroller@downResume');
         /*
          * 权限管理模块
         */

@@ -74,5 +74,6 @@ class VerifyCsrfToken extends Middleware
         ,'/admin/assetdevices/inbound'
         ,'/admin/deviceidentity/down'
         ,'/admin/deviceidentity/upload'
+        ,'/admin/completeinfouser/down'
     ];
 }
