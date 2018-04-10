@@ -31,11 +31,14 @@ class InformatizationService extends BaseService
             return false;
         }
         unset($data['file']);
-        foreach ($data['file_info'] as $k => $v) {    
-            $data['info_zspath'][] = $v;
+        if(isset($data['file_info'])){
+            foreach ($data['file_info'] as $k => $v) {    
+                $data['info_zspath'][] = $v;
+            }
+            unset($data['file_info']);
+            $data['info_zspath'] = serialize($data['info_zspath']);
         }
-        unset($data['file_info']);
-        $data['info_zspath'] = serialize($data['info_zspath']);
+        
         $data['info_fzrq'] = strtotime($data['info_fzrq']);
         // 手动开启事务
         DB::beginTransaction();
@@ -67,9 +70,16 @@ class InformatizationService extends BaseService
         $informatization->info_zsmc        = $data['info_zsmc'];
         $informatization->info_bzjg        = $data['info_bzjg'];
         $informatization->info_fzrq        = strtotime($data['info_fzrq']);
-        if(isset($data['info_zspath'])){
-            $identifyinfo->info_zspath = $data['info_zspath'];
+        if(isset($data['file_info'])){
+            foreach ($data['file_info'] as $k => $v) {    
+                $data['info_zspath'][] = $v;
+            }
+            unset($data['file_info']);
+            $informatization->info_zspath = serialize($data['info_zspath']);
         }
+        // if(isset($data['info_zspath'])){
+        //     $identifyinfo->info_zspath = $data['info_zspath'];
+        // }
         $re = $informatization->save();
         if ($re === false) {
             $this->error = '修改失败';

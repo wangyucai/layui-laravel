@@ -320,9 +320,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     });
         
         // 完善人事信息
-        Route::get('completeuserinfo', 'RegisterController@completeUserInfo')->middleware('checkifregister','checkedcompleteinfo');
-        Route::post('completeuserinfo', 'RegisterController@completeUserInfo')->middleware('checkifregister','checkedcompleteinfo');
-        Route::post('completeuserinfo/upload', 'RegisterController@uploadFace')->middleware('checkifregister','checkedcompleteinfo');
+        Route::get('completeuserinfo', 'RegisterController@completeUserInfo')->middleware('checkifregister','checkedcompleteinfo','ifcompleteinfo');
+        Route::post('completeuserinfo', 'RegisterController@completeUserInfo')->middleware('checkifregister','checkedcompleteinfo','ifcompleteinfo');
+        Route::post('completeuserinfo/upload', 'RegisterController@uploadFace')->middleware('checkifregister','checkedcompleteinfo','ifcompleteinfo');
 
     // 进行下面操作前需要先完善人事信息 
     Route::group(['middleware' => 'ifcompleteinfo'], function () {

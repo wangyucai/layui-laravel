@@ -72,7 +72,7 @@
 		<div class="layui-inline">		
 			<label class="layui-form-label">入党时间</label>
 			<div class="layui-input-inline">
-				<input type="text" id="join_party_time" class="layui-input join_party_time" lay-verify="required|date"  name="join_party_time" placeholder="请选择入党时间">
+				<input type="text" id="join_party_time" class="layui-input join_party_time" lay-verify="date"  name="join_party_time" placeholder="请选择入党时间">
 			</div>
 		</div>
 		<div class="layui-inline">		

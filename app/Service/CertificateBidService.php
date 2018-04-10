@@ -23,12 +23,12 @@ class CertificateBidService extends BaseService
             $this->httpCode = HttpCode::CONFLICT;
             return false;
         }
-        $if_check = CertificateBid::where('zsmc', $data['zsmc'])->where('my_name',$data['my_name'])->value('if_check');
-        if ($if_check == 1) {
+        $if_check = CertificateBid::where('zsmc', $data['zsmc'])->where('ywlb',$data['ywlb'])->where('my_name',$data['my_name'])->pluck('if_check')->toArray();
+        if (in_array(1, $if_check)) {
             $this->error = '该职业资格证书您已申请，正在审核中！';
             $this->httpCode = HttpCode::CONFLICT;
             return false;
-        }elseif ($if_check == 2) {
+        }elseif (in_array(2, $if_check)) {
             $this->error = '该职业资格证书已审核通过，请勿重复申请！';
             $this->httpCode = HttpCode::CONFLICT;
             return false;

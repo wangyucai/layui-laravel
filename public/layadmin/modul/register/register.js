@@ -65,9 +65,12 @@ layui.config({base: '/layadmin/modul/common/'}).use(['form', 'dialog', 'his'],fu
                 dialog.error(msg);
             }
             ,success: function (msg, data, meta) {
-                layer.msg('注册成功,您的消息已提交给本级管理员审核，请审核通过后登陆!',{btn:['确定'],yes:function(index,layero){
-                       top.location.href='/admin/login'; 
-                }});
+                layer.msg('注册成功,您的消息已提交给本级管理员审核，请审核通过后登陆!',{time:5*1000},function() {
+                    top.location.href='/admin/login'; 
+                })
+                // layer.msg('注册成功,您的消息已提交给本级管理员审核，请审核通过后登陆!',{time:5000}){
+                //        top.location.href='/admin/login'; 
+                // }});
                 // dialog.msg('注册成功,正在为您跳转');
                 // top.location.href='/admin/login';          
             }

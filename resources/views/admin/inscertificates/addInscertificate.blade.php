@@ -22,7 +22,7 @@
 		<div class="layui-form-item">
 			<label class="layui-form-label">所属单位全称</label>
 			<div class="layui-input-block">
-				<input type="text" class="layui-input layui-btn-disabled" name="ssdwqc" lay-verify="required" placeholder="所属单位全称" value="{{ $ssdwqc }}" disabled>
+				<input type="text" class="layui-input layui-btn-disabled" name="ssdwqc" lay-verify="required" placeholder="所属单位全称" value="{{ $ssdwqc }}">
 			</div>
 		</div>
 		<div class="layui-form-item">

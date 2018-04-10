@@ -19,7 +19,7 @@ class FixedAsset extends Model
         $where = $param['cond'] ?? [];
         $sortfield = $param['sortField'] ?? 'id';
         $order = $param['order'] ?? 'asc';
-        if ($where) $where = [['fixed_assets.gdzc_mc', 'like', $where.'%']];
+        if ($where) $where = [['fixed_assets.gdzc_mc', 'like', '%'.$where.'%']];
         if(isset($param['lqrq_start'])){
             $where1 = strtotime($param['lqrq_start']);
         }else{

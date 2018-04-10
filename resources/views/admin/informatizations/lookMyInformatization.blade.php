@@ -34,6 +34,7 @@
 				</div>
 			</div>
 		</div>
+		@if($myinformatization['info_zspath'])
 		<div class="layui-form-item">
 			<label class="layui-form-label">证书图片</label>
 			<div class="layui-input-block">
@@ -42,5 +43,6 @@
 				@endforeach
 			</div>
 		</div>
+		@endif
 	</form>
 @endsection
