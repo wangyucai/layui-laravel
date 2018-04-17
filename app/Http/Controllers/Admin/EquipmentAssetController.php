@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Handlers\MoreFilesUploadHandler;
 use App\Common\Enum\HttpCode;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -141,6 +142,23 @@ class EquipmentAssetController extends Controller
             $ck = Warehouse::all()->toArray();
             return view('admin.equipmentassets.addInbound', compact('zczk_arr','qryj_arr','ck','id'));
         }
+    }
+    /**
+     * 上传取入依据
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function upload(Request $request, MoreFilesUploadHandler $uploader)
+    {
+        $files = $_FILES['file'];  //上传文件file
+        $file = $request->file;  //上传文件file
+        $totalPieces = $request->totalPieces;  //上传文件切片总数
+        $index = $request->index;  //上传文件当前切片
+        $folder = 'accessBasis';
+        if ($request->file) {
+            $result = $uploader->save($files, $file, $totalPieces, $index, $folder);
+        }
+        return ajaxSuccess($result);
     }
     /**
      * 下载资产入库表

@@ -36,16 +36,16 @@ class AssetClaimService extends BaseService
         
         $data['lyrq'] = strtotime($data['lyrq']);
         // 库存总量-申领数量=剩余库存量
-        $sy_nums = $data['kc_nums']-$ly_nums;
+        // $sy_nums = $data['kc_nums']-$ly_nums;
         unset($data['kc_nums']);
         DB::beginTransaction();
         // 添加到用户持有资产表
         $userReceive = DB::table('user_receive')->insert($count);
 
         $assetClaim = AssetClaim::create($data);
-        // 更新库存量
-        $inventory = Inventory::where('kc_zcid', $data['ly_zcid'])->update(['kc_nums' => $sy_nums]);
-        if (!$assetClaim || !$inventory || !$userReceive) {
+        // 更新库存量(客户要求在申领后不改变库存量，只有审核成功后改变库存量)
+        // $inventory = Inventory::where('kc_zcid', $data['ly_zcid'])->update(['kc_nums' => $sy_nums]);
+        if (!$assetClaim || !$userReceive) {
             $this->error = '添加失败';
             $this->httpCode = HttpCode::BAD_REQUEST;
             DB::rollBack();
@@ -65,14 +65,14 @@ class AssetClaimService extends BaseService
         $my_dwdm = Auth::guard('admin')->user()->company_dwdm;
         $time = \Carbon\Carbon::now()->toDateTimeString();
         DB::beginTransaction();
-        $has = DB::table('prompt_messages')
-                        ->where([['receiver_id', '=', $data['ly_uid']],['msg_type', '=', '3'],['type_id', '=', $data['id']]])
-                        ->count();
-        if($has){
-            $this->error = $data['real_name'].'申领数量为'.$data['ly_nums'].'的'.$data['zcpp'].$data['zcmc'].'已成功反馈信息，无需审核';
-            $this->httpCode = HttpCode::NOT_FOUND;
-            return false;
-        }   
+        // $has = DB::table('prompt_messages')
+        //                 ->where([['receiver_id', '=', $data['ly_uid']],['msg_type', '=', '3'],['type_id', '=', $data['id']]])
+        //                 ->count();
+        // if($has){
+        //     $this->error = $data['real_name'].'申领数量为'.$data['ly_nums'].'的'.$data['zcpp'].$data['zcmc'].'已成功反馈信息，无需审核';
+        //     $this->httpCode = HttpCode::NOT_FOUND;
+        //     return false;
+        // }   
         $msg_arr = ['receiver_id' => $data['ly_uid'], 'sender_id' => $my_id, 
                     'sender_dwdm' => $my_dwdm, 'msg_type' => 3, 
                     'msg_content' => $data['feedback_msg'], 'type_id' => $data['id'],
@@ -80,6 +80,11 @@ class AssetClaimService extends BaseService
         $re = DB::table('prompt_messages')->insert($msg_arr);
         if($data['check_result']==1){// 审核通过
             $re1 = AssetClaim::where('ly_zcid', $data['id'])->update(['if_check' => 1,'check_time'=>time()]);
+            // 更改库存量
+            $ly_nums = $data['ly_nums'];
+            $kc_nums = Inventory::where('kc_zcid', $data['ly_zcid'])->value('kc_nums');
+            $sy_nums = $kc_nums-$ly_nums;
+            $inventory = Inventory::where('kc_zcid', $data['ly_zcid'])->update(['kc_nums' => $sy_nums]);
         }elseif($data['check_result']==2){//审核不通过
             $re1 = AssetClaim::where('ly_zcid', $data['id'])->update(['if_check' => 2,'check_time'=>time()]);
         }

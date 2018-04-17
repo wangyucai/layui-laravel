@@ -416,5 +416,16 @@ class RegisterController extends Controller
             'msg' => $res['all_path'],
         ];
     }
+    // 我拥有的角色页面
+    public function myRole(Request $request)
+    {   
+        $roles = Role::all()->toArray();
+        $my_user_id = Auth::guard('admin')->user()->id;
+        $myRoles = Admin::with('roles')->find($my_user_id)->toArray();
+        // 判断是否为超级管理员
+        $roles = $my_user_id ==1 ? $roles : $myRoles['roles'];
+        return view('admin.register.myRole', compact('roles'));
+    }
+    
 }
     

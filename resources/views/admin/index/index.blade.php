@@ -56,6 +56,7 @@
                         <cite>{{$user->username}}</cite>
                     </a>
                     <dl class="layui-nav-child">
+                        <dd><a href="javascript:;" data-url="/admin/user/myroles"><i class="layui-icon" data-icon="&#xe612;">&#xe612;</i><cite>我的角色</cite></a></dd>
                         <dd><a href="javascript:;" data-url="/admin/completeinfouser/detail"><i class="layui-icon" data-icon="&#xe612;">&#xe612;</i><cite>个人资料</cite></a></dd>
                         <dd><a href="javascript:;" data-url="/admin/completeinfouser/edit"><i class="layui-icon" data-icon="&#xe642;">&#xe642;</i><cite>修改资料</cite></a></dd>
                         <dd><a href="javascript:;" data-url="/admin/user/password/edit"><i class="layui-icon" data-icon="&#xe620;">&#xe620;</i><cite>修改密码</cite></a></dd>

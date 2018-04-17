@@ -33,6 +33,12 @@ class UserReceive extends Model
                                  ->orderBy($sortfield, $order)
                                  ->get();
         $myAssetDevices= $myAssetDevices->toArray();
+        foreach ($myAssetDevices as $k => $v) {
+            if($v['back_time']){
+               $v['back_time'] = date('Y-m-d',$v['back_time']);
+            } 
+            $myAssetDevices[$k] =  $v;
+        }
         $count = $this->where($where)
                       ->where('user_receive.zc_id',$zc_id)
                       ->where('user_receive.user_id',$param['my_id'])
@@ -66,6 +72,12 @@ class UserReceive extends Model
                                  ->orderBy($sortfield, $order)
                                  ->get();
         $myAssetDevices= $myAssetDevices->toArray();
+        foreach ($myAssetDevices as $k => $v) {
+            if($v['rk_time']){
+               $v['rk_time'] = date('Y-m-d',$v['rk_time']);
+            } 
+            $myAssetDevices[$k] =  $v;
+        }
         $count = $this->where($where)
                       ->where('user_receive.zc_id',$zc_id)
                       ->leftJoin('equipment_assets', 'equipment_assets.id', '=', 'user_receive.zc_id')

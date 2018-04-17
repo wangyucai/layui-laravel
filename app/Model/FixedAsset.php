@@ -78,7 +78,7 @@ class FixedAsset extends Model
         $where4 = $param['gdzc_bmdm'] ?? [];
         $sortfield = $param['sortField'] ?? 'id';
         $order = $param['order'] ?? 'asc';
-        if ($where) $where = [['fixed_assets.gdzc_mc', 'like', $where.'%']];
+        if ($where) $where = [['fixed_assets.gdzc_mc', 'like', '%'.$where.'%']];
         if ($where3) $where3 = [['admins.real_name', 'like', $where3.'%']];
         if ($where4) $where4 = [['fixed_assets.gdzc_bmdm', $where4]];
         if(isset($param['lqrq_start'])){

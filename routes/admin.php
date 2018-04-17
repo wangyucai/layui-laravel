@@ -24,6 +24,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         // 修改密码操作（自己有修改自己的密码权限）
         Route::get('user/password/edit', 'IndexController@editPassword');
         Route::put('user/password', 'IndexController@editPassword');
+        // 我拥有的角色
+        Route::get('user/myroles', 'RegisterController@myRole');
         // 我已完善的人事信息页面
         Route::get('completeinfouser/detail', 'RegisterController@myInfo');
         // 编辑我已完善的人事信息
@@ -287,6 +289,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
             //采购经手人入库
             Route::get('equipmentasset/{id}/inbound', 'EquipmentAssetController@addInbound');
             Route::post('equipmentasset/inbound', 'EquipmentAssetController@addInbound');
+            Route::post('equipmentasset/upload', 'EquipmentAssetController@upload');
             // 下载资产入库表
             Route::post('equipmentasset/download', 'EquipmentAssetController@downloadInbound');
             // 入库资产管理
@@ -320,7 +323,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     });
         
         // 完善人事信息
-        Route::get('completeuserinfo', 'RegisterController@completeUserInfo')->middleware('checkifregister','checkedcompleteinfo','ifcompleteinfo');
+        Route::get('completeuserinfo', 'RegisterController@completeUserInfo')->middleware('checkifregister','checkedcompleteinfo');
         Route::post('completeuserinfo', 'RegisterController@completeUserInfo')->middleware('checkifregister','checkedcompleteinfo','ifcompleteinfo');
         Route::post('completeuserinfo/upload', 'RegisterController@uploadFace')->middleware('checkifregister','checkedcompleteinfo','ifcompleteinfo');
 

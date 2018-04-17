@@ -21,6 +21,7 @@ class InventoryService extends BaseService
     {
         $data['kc_rkrq'] = strtotime($data['kc_rkrq']);
         $inventory = Inventory::find($data['id']);
+        unset($data['file']);
         // 手动开启事务
         DB::beginTransaction();
         
@@ -29,7 +30,13 @@ class InventoryService extends BaseService
         $inventory->kc_zczk        = $data['kc_zczk'];
         $inventory->kc_qryj        = $data['kc_qryj'];
         $inventory->kc_rkrq        = $data['kc_rkrq'];
-
+         if(isset($data['file_info'])){
+            foreach ($data['file_info'] as $k => $v) {    
+                $data['info_zspath'][] = $v;
+            }
+            unset($data['file_info']);
+            $inventory->info_zspath = serialize($data['info_zspath']);
+        }
         $re = $inventory->save();
         if ($re === false) {
             $this->error = '修改失败';

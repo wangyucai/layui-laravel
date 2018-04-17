@@ -107,6 +107,14 @@ class EquipmentAssetService extends BaseService
             $this->httpCode = HttpCode::CONFLICT;
             return false;
         }
+        unset($data['file']);
+        if(isset($data['file_info'])){
+            foreach ($data['file_info'] as $k => $v) {    
+                $data['info_zspath'][] = $v;
+            }
+            unset($data['file_info']);
+            $data['info_zspath'] = serialize($data['info_zspath']);
+        }
         // 获取资产编号
         $zcbh = EquipmentAsset::where('id', $data['kc_zcid'])->value('zcbh');
         DB::beginTransaction();

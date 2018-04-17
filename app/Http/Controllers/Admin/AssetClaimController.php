@@ -362,13 +362,13 @@ class AssetClaimController extends Controller
     {
         // 更改该设备的出库状态为入库
         $re = DeviceIdentity::where('sbsf_xh', $request->id)->update(['if_ck' => $request->if_ck]);
-        $re1 = DB::table('user_receive')->where('sbsf_id', $request->id)->update(['if_back_inbound' => 1]);
+        $re1 = DB::table('user_receive')->where('sbsf_id', $request->id)->update(['if_back_inbound' => 1,'rk_time'=>time()]);
         // 获取该资产的总库存量
         $kc_nums = Inventory::where('kc_zcid', $request->zc_id)->value('kc_nums');
         ++$kc_nums;
         // 库存量+1
-        $re = Inventory::where('kc_zcid', $request->zc_id)->update(['kc_nums' => $kc_nums]);
-        if (!$re || !$re1) return ajaxError('修改失败', HttpCode::BAD_REQUEST);
+        $re2 = Inventory::where('kc_zcid', $request->zc_id)->update(['kc_nums' => $kc_nums]);
+        if (!$re || !$re1 || !$re2) return ajaxError('修改失败', HttpCode::BAD_REQUEST);
         return ajaxSuccess();
     }
     /**

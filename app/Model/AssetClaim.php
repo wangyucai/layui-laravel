@@ -77,7 +77,7 @@ class AssetClaim extends Model
         $where3 = $param['slr'] ?? [];
         $sortfield = $param['sortField'] ?? 'id';
         $order = $param['order'] ?? 'asc';
-        if ($where) $where = [['equipment_assets.zcmc', 'like', $where.'%']];
+        if ($where) $where = [['equipment_assets.zcmc', 'like', '%'.$where.'%']];
         if(isset($param['lqrq_start'])){
             $where1 = strtotime($param['lqrq_start']);
         }else{

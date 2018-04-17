@@ -18,7 +18,7 @@ class EquipmentAsset extends Model
         $where = $param['cond'] ?? [];
         $sortfield = $param['sortField'] ?? 'id';
         $order = $param['order'] ?? 'asc';
-        if ($where) $where = [['equipment_assets.zcmc', 'like', $where.'%']];
+        if ($where) $where = [['equipment_assets.zcmc', 'like', '%'.$where.'%']];
         $offset = ($page - 1) * $limit;
         $equipmentAssets = $this ->where($where)
                                  ->where('equipment_assets.zc_dwdm',$param['zc_dwdm'])

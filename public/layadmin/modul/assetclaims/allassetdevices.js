@@ -23,6 +23,7 @@ layui.config({base: '/layadmin/modul/common/'}).use(['table','form','dialog', 'h
         ,cols: [[ //表头
             {field: 'id', title: 'ID', width:80, sort: true, fixed: 'left', align: 'left'}
             ,{field: 'sbsf_id', title: '设备ID'}
+            ,{field: 'rk_time', title: '归还入库时间'}
             ,{field: 'if_back', title: '是否归还',width: 120, templet: '#active'}
             ,{title: '操作', width: 220, toolbar: '#op'}
         ]]
